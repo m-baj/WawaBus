@@ -43,5 +43,15 @@ services:
     build:
       context: ./api
 
+  data-retrieval:
+    image: '${DOCKER_IMAGE_DATA_RETRIEVAL?Variable not set}:${TAG-latest}'
+    restart: "no"
+    networks:
+      - default
+    build:
+        context: ./data_retrieval
+
+
+
 volumes:
   app-db-data:

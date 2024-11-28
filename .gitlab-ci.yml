@@ -5,3 +5,11 @@ test-api:
     - sh ./scripts/gitlab-test-api.sh
   tags:
     - test
+
+test-data-retrieval:
+  stage: test
+  coverage: '/TOTAL.*\s+(\d+%)$/'
+  script:
+    - sh ./scripts/gitlab-test-data-retrieval.sh
+  tags:
+    - test
