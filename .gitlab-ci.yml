@@ -1,0 +1,7 @@
+test-api:
+  stage: test
+  coverage: '/TOTAL.*\s+(\d+%)$/'
+  script:
+    - sh ./scripts/gitlab-test-api.sh
+  tags:
+    - test
