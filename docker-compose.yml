@@ -1,4 +1,18 @@
 services:
+  nosql-db:
+    image: mongo:8.0
+    restart: "no"
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    volumes:
+      - app-nosql-db-data:/data/db
+    ports:
+      - "27017:27017"
+
   sql-db:
     image: postgres:12
     restart: "no"
@@ -55,3 +69,4 @@ services:
 
 volumes:
   app-db-data:
+  app-nosql-db-data:
