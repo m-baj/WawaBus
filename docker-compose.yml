@@ -57,6 +57,25 @@ services:
     build:
       context: ./api
 
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    restart: "no"
+    networks:
+      - default
+    depends_on:
+      backend-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   data-retrieval:
     image: '${DOCKER_IMAGE_DATA_RETRIEVAL?Variable not set}:${TAG-latest}'
     restart: "no"
