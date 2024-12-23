@@ -46,7 +46,7 @@ services:
     depends_on:
       sql-db:
         condition: service_healthy
-        restart: true
+#        restart: true
     env_file:
       - .env
     ports:

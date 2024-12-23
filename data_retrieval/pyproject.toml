@@ -5,6 +5,8 @@ description = ""
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "fastapi[standard]<1.0.0,>=0.114.2",
+    "sqlmodel<1.0.0,>=0.0.21",
     "pydantic-settings>=2.7.1",
     "pydantic>=2.10.4",
     "pymongo>=4.10.1",
