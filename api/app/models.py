@@ -1,10 +1,10 @@
 from sqlmodel import SQLModel, Field
-from pydantic import EmailStr
+from datetime import datetime
+from typing import List, Optional
 
 
-class Notification(SQLModel, table=True):
-    id: int = Field(default=None, primary_key=True)
-    email: EmailStr
-    line: str
-    stop: str
-    time: str
+class MailBody(SQLModel):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    to: List[str] = Field(default=[])
+    subject: str
+    body: str
