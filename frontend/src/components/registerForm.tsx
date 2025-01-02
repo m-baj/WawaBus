@@ -1,11 +1,10 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import {
   Stack,
   Container,
   Text,
   FormControl,
   Input,
-  InputLeftAddon,
   InputGroup,
   InputRightElement,
   Button,
