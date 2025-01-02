@@ -13,11 +13,12 @@ import {
   FormErrorMessage,
   useBoolean,
   Icon,
+  InputLeftElement,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { confirmPasswordRules, emailPattern, passwordRules } from "@/utils";
 import Link from "next/link";
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { AtSignIcon, LockIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { type RegisterData } from "@/types";
 import { signup } from "@/api-calls/auth";
 import useCustomToast from "@/hooks/useCustomToast";
@@ -75,16 +76,21 @@ const registerForm = () => {
           Sign up
         </Text>
         <FormControl id="email_address" isInvalid={!!errors.email_address}>
-          <Input
-            type="email"
-            {...register("email_address", {
-              required: "Email is required",
-              pattern: emailPattern,
-            })}
-            placeholder="Email"
-            variant="filled"
-            required
-          />
+          <InputGroup>
+            <InputLeftElement pointerEvents="none">
+              <AtSignIcon color="gray.400" />
+            </InputLeftElement>
+            <Input
+              type="email"
+              {...register("email_address", {
+                required: "Email is required",
+                pattern: emailPattern,
+              })}
+              placeholder="Email"
+              variant="filled"
+              required
+            />
+          </InputGroup>
           {errors.email_address && (
             <FormErrorMessage>{errors.email_address.message}</FormErrorMessage>
           )}
@@ -94,6 +100,9 @@ const registerForm = () => {
             Password
           </FormLabel>
           <InputGroup>
+            <InputLeftElement pointerEvents="none">
+              <LockIcon color="gray.400" />
+            </InputLeftElement>
             <Input
               type={show1 ? "text" : "password"}
               {...register("password", passwordRules())}
@@ -117,6 +126,9 @@ const registerForm = () => {
         </FormControl>
         <FormControl id="confirmPassword" isInvalid={!!errors.confirmPassword}>
           <InputGroup>
+            <InputLeftElement pointerEvents="none">
+              <LockIcon color="gray.400" />
+            </InputLeftElement>
             <Input
               type={show2 ? "text" : "password"}
               {...register("confirmPassword", confirmPasswordRules(getValues))}
