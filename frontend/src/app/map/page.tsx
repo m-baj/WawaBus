@@ -6,16 +6,16 @@ const MyMapComponent = dynamic(() => import("@/components/mapContainer"), {
     ssr: false,
 });
 
-const points = [
-    { lat: 50.5, lng: 30.5, label: "Point 1" },
-    { lat: 50.6, lng: 30.6, label: "Point 2" },
-    { lat: 50.7, lng: 30.7, label: "Point 3" },
+const markers_example = [
+    { X: 52.2, Y: 21.0, number: "123" },
+    { X: 52.22, Y: 21.1, number: "124" },
+    { X: 52.18, Y: 21.05, number: "125" },
 ];
 
 const Map = () => {
     return (
         <div>
-            <MyMapComponent points={points} />
+            <MyMapComponent markers={markers_example} />
         </div>
     );
 };
