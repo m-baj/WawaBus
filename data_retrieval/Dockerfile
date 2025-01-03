@@ -26,4 +26,4 @@ COPY ./data_retrieval /app/data_retrieval
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync
 
-CMD ["python", "data_retrieval/api_connector/connect.py"]
+CMD ["python", "data_retrieval/main.py"]
