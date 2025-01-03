@@ -13,7 +13,7 @@ const AuthLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
           <main>{children}</main>
         </Stack>
       </div>
-      <div className="pt-10">
+      <div>
         <Footer />
       </div>
     </div>
