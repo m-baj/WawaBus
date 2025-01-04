@@ -12,10 +12,16 @@ def main():
     logger.info("Database connection established")
     while True:
         logger.info("Downloading data")
-        load_current_bus_locations(db)
-        logger.info("Data successfully downloaded and saved")
-        logger.info("Sleeping for %d seconds", settings.HEARTBEAT)
-        sleep(settings.HEARTBEAT)
+        try:
+            load_current_bus_locations(db)
+            logger.info("Data successfully downloaded and saved")
+        except Exception as e:
+            logger.error("Failed to download data: %s", e)
+            logger.info("Sleeping for %d seconds", settings.HEARTBEAT)
+            sleep(settings.HEARTBEAT // 4)
+        finally:
+            logger.info("Sleeping for %d seconds", settings.HEARTBEAT)
+            sleep(settings.HEARTBEAT)
 
 if __name__ == "__main__":
     main()

@@ -3,7 +3,7 @@ services:
     image: mongo:8.0
     restart: "no"
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
       interval: 10s
       retries: 5
       start_period: 30s
@@ -87,6 +87,9 @@ services:
       - default
     build:
         context: ./data_retrieval
+    depends_on:
+      nosql-db:
+        condition: service_healthy
     environment:
       - MONGO_HOST=${MONGO_HOST}
       - MONGO_PORT=${MONGO_PORT}
