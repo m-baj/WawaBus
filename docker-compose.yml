@@ -3,11 +3,15 @@ services:
     image: mongo:8.0
     restart: "no"
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
       interval: 10s
       retries: 5
       start_period: 30s
       timeout: 10s
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
     volumes:
       - app-nosql-db-data:/data/db
     ports:
@@ -83,6 +87,18 @@ services:
       - default
     build:
         context: ./data_retrieval
+    depends_on:
+      nosql-db:
+        condition: service_healthy
+    environment:
+      - MONGO_HOST=${MONGO_HOST}
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_DATABASE=${MONGO_DATABASE}
+      - WARSAW_API_URL=${WARSAW_API_URL}
+      - WARSAW_API_KEY=${WARSAW_API_KEY}
+      - HEARTBEAT=${HEARTBEAT}
 
 
 

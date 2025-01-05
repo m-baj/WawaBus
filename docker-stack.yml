@@ -15,12 +15,19 @@ services:
       DOCKER_IMAGE_DATA_RETRIEVAL: data-retrieval
       DOMAIN: localhost
       FRONTEND_HOST: http://localhost:5173
+      HEARTBEAT: "60"
+      MONGO_DATABASE: warsaw-api-data
+      MONGO_HOST: nosql-db
+      MONGO_PASSWORD: password
+      MONGO_USERNAME: admin
       POSTGRES_DB: app
       POSTGRES_HOST: localhost
       POSTGRES_PASSWORD: postgresqlpassword
       POSTGRES_PORT: "5432"
       POSTGRES_USER: postgres
       PROJECT_NAME: WawaBus
+      WARSAW_API_KEY: 81658e47-99ea-4424-a3b4-c5228a8034aa
+      WARSAW_API_URL: https://api.um.warszawa.pl/api
     healthcheck:
       test:
         - CMD
@@ -43,10 +50,75 @@ services:
     build:
       context: /home/pawel/projekty/pis-24z/data_retrieval
       dockerfile: Dockerfile
+    environment:
+      HEARTBEAT: "60"
+      MONGO_DATABASE: warsaw-api-data
+      MONGO_HOST: nosql-db
+      MONGO_PASSWORD: password
+      MONGO_PORT: ""
+      MONGO_USERNAME: admin
+      WARSAW_API_KEY: 81658e47-99ea-4424-a3b4-c5228a8034aa
+      WARSAW_API_URL: https://api.um.warszawa.pl/api
     image: data-retrieval:latest
     networks:
       default: null
     restart: "no"
+  frontend:
+    build:
+      context: /home/pawel/projekty/pis-24z/frontend
+      dockerfile: Dockerfile
+    depends_on:
+      backend-api:
+        condition: service_healthy
+        required: true
+    environment:
+      NODE_ENV: production
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:3000
+      timeout: 5s
+      interval: 10s
+      retries: 5
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 3000
+        published: "3000"
+        protocol: tcp
+    restart: "no"
+  nosql-db:
+    environment:
+      MONGO_INITDB_DATABASE: warsaw-api-data
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_ROOT_USERNAME: admin
+    healthcheck:
+      test:
+        - CMD
+        - mongo
+        - --eval
+        - db.adminCommand('ping')
+      timeout: 10s
+      interval: 10s
+      retries: 5
+      start_period: 30s
+    image: mongo:8.0
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 27017
+        published: "27017"
+        protocol: tcp
+    restart: "no"
+    volumes:
+      - type: volume
+        source: app-nosql-db-data
+        target: /data/db
+        volume: {}
   sql-db:
     environment:
       BACKEND_CORS_ORIGINS: http://localhost,http://localhost:5173,https://localhost,https://localhost:5173
@@ -54,6 +126,11 @@ services:
       DOCKER_IMAGE_DATA_RETRIEVAL: data-retrieval
       DOMAIN: localhost
       FRONTEND_HOST: http://localhost:5173
+      HEARTBEAT: "60"
+      MONGO_DATABASE: warsaw-api-data
+      MONGO_HOST: nosql-db
+      MONGO_PASSWORD: password
+      MONGO_USERNAME: admin
       PGDATA: /var/lib/postgresql/data/pgdata
       POSTGRES_DB: app
       POSTGRES_HOST: localhost
@@ -61,6 +138,8 @@ services:
       POSTGRES_PORT: "5432"
       POSTGRES_USER: postgres
       PROJECT_NAME: WawaBus
+      WARSAW_API_KEY: 81658e47-99ea-4424-a3b4-c5228a8034aa
+      WARSAW_API_URL: https://api.um.warszawa.pl/api
     healthcheck:
       test:
         - CMD-SHELL
@@ -89,3 +168,5 @@ networks:
 volumes:
   app-db-data:
     name: pis-24z_app-db-data
+  app-nosql-db-data:
+    name: pis-24z_app-nosql-db-data
