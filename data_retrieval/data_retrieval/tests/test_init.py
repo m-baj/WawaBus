@@ -28,7 +28,14 @@ def test_load_current_bus_locations():
     db = DatabaseConnector()
     collection = db.get_collection()
     current_count = collection.count_documents({})
-    load_current_bus_locations(db)
+    while True:
+        try:
+            load_current_bus_locations(db)
+        except Exception as e:
+            print(e)
+            continue
+        break
+
     db.close_connection()
     db = DatabaseConnector()
     collection = db.get_collection()
