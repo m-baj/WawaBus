@@ -10,7 +10,7 @@ from app.models import MailBody
 
 def send_email(data: dict | None = None):
     msg = MailBody(**data)
-
+    print(f"msg = {msg}")
     # Przygotowanie wiadomości
     message = MIMEMultipart("alternative")
     message["From"] = settings.SMTP_config["user"]

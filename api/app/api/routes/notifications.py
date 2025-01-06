@@ -46,6 +46,7 @@ def add_notification(request: NotificationRequest, session: Session = Depends(ge
             </html>
         """
     }
+    print(email_data)
     tasks.add_task(send_email, email_data)
     return notification
 
