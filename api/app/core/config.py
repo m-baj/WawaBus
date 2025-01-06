@@ -1,13 +1,12 @@
 import secrets
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any, Dict
 
 from pydantic import (
     AnyUrl,
     BeforeValidator,
     computed_field,
 )
-
 
 def parse_cors(v: Any) -> list[str] | str:
     if isinstance(v, str) and not v.startswith("["):
@@ -46,6 +45,31 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str = ""
     POSTGRES_DB: str = ""
+
+    SECRET_KEY: str
+
+    # konfiguracja SMTP
+    SMTP_TLS: bool = True
+    SMTP_SSL: bool = False
+    SMTP_PORT: int = 587
+    SMTP_HOST: str | None = None
+    SMTP_USER: str | None = None
+    SMTP_PASSWORD: str | None = None
+
+    @computed_field
+    @property
+    def SMTP_config(self) -> Dict[str, Any]:
+        """
+        Zwraca konfigurację SMTP jako słownik.
+        """
+        return {
+            "host": self.SMTP_HOST,
+            "port": self.SMTP_PORT,
+            "user": self.SMTP_USER,
+            "password": self.SMTP_PASSWORD,
+            "tls": self.SMTP_TLS,
+            "ssl": self.SMTP_SSL,
+        }
 
 
 settings = Settings()
