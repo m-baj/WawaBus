@@ -29,6 +29,10 @@ class User(SQLModel, table=True):
 
     notifications: List["Notification"] = Relationship(back_populates="user", cascade_delete=True)
 
+class UserCreate(SQLModel):
+    email: str
+    password: str
+
 
 class Notification(SQLModel, table=True):
     id: str = Field(primary_key=True)

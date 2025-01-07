@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
-from app.models import User
+from app.models import User, UserCreate
 from app.crud import get_user_by_email, create_user
 from app.core.security import (
     verify_password,
@@ -12,18 +12,14 @@ from app.core.db import get_session
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=User)
-def register(
-    email: str,
-    password: str,
-    session: Session = Depends(get_session),
-):
-    if get_user_by_email(session, email):
+def register(user_create: UserCreate, session: Session = Depends(get_session)):
+    if get_user_by_email(session, user_create.email):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Username already registered",
         )
-    hashed_password = get_password_hash(password)
-    return create_user(session, email, hashed_password)
+    hashed_password = get_password_hash(user_create.password)
+    return create_user(session, user_create.email, hashed_password)
 
 @router.post("/login")
 def login(

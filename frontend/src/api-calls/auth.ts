@@ -10,7 +10,12 @@ export const signup = async (user: RegisterData) => {
   try {
     const response = await axios.post(
       `http://localhost:8000/api/v1/auth/register`,
-      user
+      user,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
     );
     return {
       message: response.data,

@@ -43,7 +43,7 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (isLoggedIn()) {
-      redirect("/user");
+      redirect("/");
     }
   }, []);
 

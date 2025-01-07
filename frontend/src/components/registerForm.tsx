@@ -37,7 +37,7 @@ const registerForm = () => {
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      email_address: "",
+      email: "",
       password: "",
       confirmPassword: "",
     },
@@ -74,14 +74,14 @@ const registerForm = () => {
         <Text fontSize="xl" fontWeight="bold" textAlign="center">
           Sign up
         </Text>
-        <FormControl id="email_address" isInvalid={!!errors.email_address}>
+        <FormControl id="email_address" isInvalid={!!errors.email}>
           <InputGroup>
             <InputLeftElement pointerEvents="none">
               <AtSignIcon color="gray.400" />
             </InputLeftElement>
             <Input
               type="email"
-              {...register("email_address", {
+              {...register("email", {
                 required: "Email is required",
                 pattern: emailPattern,
               })}
@@ -90,8 +90,8 @@ const registerForm = () => {
               required
             />
           </InputGroup>
-          {errors.email_address && (
-            <FormErrorMessage>{errors.email_address.message}</FormErrorMessage>
+          {errors.email && (
+            <FormErrorMessage>{errors.email.message}</FormErrorMessage>
           )}
         </FormControl>
         <FormControl id="password" isInvalid={!!errors.password}>
