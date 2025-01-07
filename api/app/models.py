@@ -23,7 +23,7 @@ class NotificationRequest(SQLModel):
 
 class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    username: str
+    email: str
     hashed_password: str
     active_notifications_ids: Optional[List[int]] = Field(default=[], sa_column=Column(ARRAY(Integer)))
 

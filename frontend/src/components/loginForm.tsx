@@ -1,5 +1,5 @@
-import React, { use, useEffect, useState } from "react";
-import { Form, useForm, type SubmitHandler } from "react-hook-form";
+import React, { useEffect } from "react";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import {
   Container,
   Button,
@@ -21,10 +21,9 @@ import { login } from "@/api-calls/auth";
 import useCustomToast from "@/hooks/useCustomToast";
 import { redirect } from "next/navigation";
 import { isLoggedIn } from "@/hooks/useAuth";
-import { jwtDecode } from "jwt-decode";
 
 interface LoginData {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -37,14 +36,14 @@ const LoginForm = () => {
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
 
   useEffect(() => {
     if (isLoggedIn()) {
-      redirect("/");
+      redirect("/user");
     }
   }, []);
 
@@ -56,6 +55,8 @@ const LoginForm = () => {
 
     if (response.status) {
       showToast("Success", response.message, "success");
+      console.log(response.message);
+      console.log(response.token);
       localStorage.setItem("token", response.token);
       redirect("/");
     } else {
@@ -76,14 +77,14 @@ const LoginForm = () => {
         <Text fontSize="xl" fontWeight="bold" textAlign="center">
           Sign in
         </Text>
-        <FormControl id="username" isInvalid={!!errors.username}>
+        <FormControl id="email" isInvalid={!!errors.email}>
           <InputGroup>
             <InputLeftElement pointerEvents="none">
               <AtSignIcon color="gray.400" />
             </InputLeftElement>
             <Input
               type="text"
-              {...register("username", {
+              {...register("email", {
                 required: "Email address is required",
                 pattern: emailPattern,
               })}
@@ -92,8 +93,8 @@ const LoginForm = () => {
               required
             />
           </InputGroup>
-          {errors.username && (
-            <FormErrorMessage>{errors.username.message}</FormErrorMessage>
+          {errors.email && (
+            <FormErrorMessage>{errors.email.message}</FormErrorMessage>
           )}
         </FormControl>
         <FormControl label="Password">

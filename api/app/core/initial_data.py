@@ -14,11 +14,11 @@ def load_initial_data(session: Session):
         hashed_password = get_password_hash("user")
         users = [
         User(
-            username="user",
+            email="user@user.user",
             hashed_password=hashed_password,
         ),
         User(
-            username="user_2",
+            email="user2@user.user",
             hashed_password=hashed_password,
         )]
         session.add_all(users)

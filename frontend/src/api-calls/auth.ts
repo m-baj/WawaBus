@@ -9,7 +9,7 @@ type Response = {
 export const signup = async (user: RegisterData) => {
   try {
     const response = await axios.post(
-      `http://localhost:8000/users/register`,
+      `http://localhost:8000/api/v1/auth/register`,
       user
     );
     return {
@@ -24,17 +24,21 @@ export const signup = async (user: RegisterData) => {
   }
 };
 
-export const login = async (data: { username: string; password: string }) => {
+export const login = async (data: { email: string; password: string }) => {
   try {
-    const params = new URLSearchParams();
-    params.append("grant_type", "password");
-    params.append("username", data.username);
-    params.append("password", data.password);
-    const response = await axios.post(`http://localhost:8000/login`, params, {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    });
+    const response = await axios.post(
+      `http://localhost:8000/api/v1/auth/login`,
+      null,
+      {
+        params: {
+          email: data.email,
+          password: data.password,
+        },
+        headers: {
+          "accept": "application/json",
+        },
+      }
+    );
     return {
       message: "Login successful",
       token: response.data.access_token,
