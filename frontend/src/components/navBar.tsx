@@ -48,6 +48,7 @@ const NavLink = (props: Props) => {
 
 export default function WithAction() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const username = "Username";
 
   return (
     <>
@@ -102,12 +103,9 @@ export default function WithAction() {
                   <Avatar size={"2xl"} />
                 </Center>
                 <br />
-                <Center>
-                  <p>Username</p>
-                </Center>
+                <Center>{username}</Center>
                 <br />
                 <MenuDivider />
-                <MenuItem>Your Servers</MenuItem>
                 <MenuItem>Account Settings</MenuItem>
                 <MenuItem>Logout</MenuItem>
               </MenuList>
