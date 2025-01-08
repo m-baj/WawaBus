@@ -1,13 +1,13 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-from datetime import datetime
 from app.core.email import send_email
 from app.models import Notification
 from app.core.db import get_session
+from api.crud import check_bus_status
 
 def send_scheduled_email(notification_id: str):
     session = next(get_session())
     notification = session.get(Notification, notification_id)
-    if notification:
+    if notification and check_bus_status(notification.line):
         email_data = {
             "to": [notification.email],
             "subject": "Scheduled Notification",
