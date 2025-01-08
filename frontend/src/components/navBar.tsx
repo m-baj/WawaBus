@@ -4,7 +4,7 @@ import {
   Box,
   Flex,
   Avatar,
-  Text,
+  Image,
   Button,
   Menu,
   MenuButton,
@@ -50,7 +50,9 @@ export default function Nav() {
     <>
       <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
-          <Box>Logo</Box>
+          <Box>
+            <Image src="/assets/WawaBus.png" alt="WawaBus" width={100} />
+          </Box>
 
           <Flex alignItems={"center"}>
             <Stack direction={"row"} spacing={7}>
