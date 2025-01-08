@@ -43,7 +43,7 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (isLoggedIn()) {
-      redirect("/");
+      redirect("/map");
     }
   }, []);
 
@@ -58,7 +58,7 @@ const LoginForm = () => {
       console.log(response.message);
       console.log(response.token);
       localStorage.setItem("token", response.token);
-      redirect("/");
+      redirect("/map");
     } else {
       showToast("Error", response.message, "error");
     }
