@@ -18,6 +18,7 @@ import {
   Center,
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import SearchBar from "@/components/searchBar";
 
 interface Props {
   children: React.ReactNode;
@@ -53,13 +54,12 @@ export default function Nav() {
           <Box>
             <Image src="/assets/WawaBus.png" alt="WawaBus" width={100} />
           </Box>
+          <Box width="50%">
+            <SearchBar />
+          </Box>
 
           <Flex alignItems={"center"}>
             <Stack direction={"row"} spacing={7}>
-              <Button onClick={toggleColorMode}>
-                {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-              </Button>
-
               <Menu>
                 <MenuButton
                   as={Button}
