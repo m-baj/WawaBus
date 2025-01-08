@@ -54,13 +54,13 @@ const NotificationForm = () => {
     const showToast = useCustomToast();
 
     const onSubmit = async (data: NotificationFormData) => {
-        console.log("Submitting data:", data);
+        console.log("Przesyłanie danych:", data);
         const response = await createNotification(data);
-        console.log("Response:", response);
+        console.log("Odpowiedź:", response);
         if (response.status) {
-            showToast("Notification created successfully", "", "success");
+            showToast("Powiadomienie zostało pomyślnie utworzone", "", "success");
         } else {
-            showToast("An error occurred", response.message, "error");
+            showToast("Wystąpił błąd", response.message, "error");
         }
     };
 
@@ -75,16 +75,16 @@ const NotificationForm = () => {
                 borderColor="gray.200"
             >
                 <Text fontSize="xl" fontWeight="bold" textAlign="center">
-                    Create Notification
+                    Utwórz Powiadomienie
                 </Text>
                 <FormControl id="line" isInvalid={!!errors.line}>
-                    <FormLabel>Line</FormLabel>
+                    <FormLabel>Numer linii</FormLabel>
                     <Input
                         type="text"
                         {...register("line", {
-                            required: "Line is required",
+                            required: "Linia jest wymagana",
                         })}
-                        placeholder="Line"
+                        placeholder="Linia"
                         variant="filled"
                         required
                     />
@@ -93,13 +93,13 @@ const NotificationForm = () => {
                     )}
                 </FormControl>
                 <FormControl id="stop" isInvalid={!!errors.stop}>
-                    <FormLabel>Stop</FormLabel>
+                    <FormLabel>Pętla</FormLabel>
                     <Input
                         type="text"
                         {...register("stop", {
-                            required: "Stop is required",
+                            required: "Przystanek jest wymagany",
                         })}
-                        placeholder="Stop"
+                        placeholder="Przystanek"
                         variant="filled"
                         required
                     />
@@ -108,13 +108,13 @@ const NotificationForm = () => {
                     )}
                 </FormControl>
                 <FormControl id="time" isInvalid={!!errors.time}>
-                    <FormLabel>Time</FormLabel>
+                    <FormLabel>Czas</FormLabel>
                     <Input
                         type="datetime-local"
                         {...register("time", {
-                            required: "Time is required",
+                            required: "Czas jest wymagany",
                         })}
-                        placeholder="Time"
+                        placeholder="Czas"
                         variant="filled"
                         required
                     />
@@ -123,7 +123,7 @@ const NotificationForm = () => {
                     )}
                 </FormControl>
                 <Button border="1px" isLoading={isSubmitting} type="submit" colorScheme="blue">
-                    Register
+                    Zarejestruj
                 </Button>
             </Stack>
         </Container>
