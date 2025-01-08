@@ -3,7 +3,6 @@ import {
   Box,
   Input,
   InputGroup,
-  InputLeftAddon,
   InputRightElement,
   Button,
   VStack,
@@ -87,7 +86,7 @@ const SearchBar = () => {
         )}
         <Input
           type="text"
-          placeholder="Wprowadź numer linii"
+          placeholder="Filtruj wyświetlane linie"
           value={query}
           onChange={handleInputChange}
           border="1px solid #949494"

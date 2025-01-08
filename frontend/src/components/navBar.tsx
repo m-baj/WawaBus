@@ -17,6 +17,7 @@ import {
   useColorModeValue,
   Stack,
   Image,
+  Center,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, AddIcon } from "@chakra-ui/icons";
 
@@ -81,7 +82,9 @@ export default function WithAction() {
               mr={4}
               leftIcon={<AddIcon />}
             >
-              Dodaj powiadomienie
+              <Box display={{ base: "none", md: "inline" }}>
+                Nowe powiadomienie
+              </Box>
             </Button>
             <Menu>
               <MenuButton
@@ -91,13 +94,22 @@ export default function WithAction() {
                 cursor={"pointer"}
                 minW={0}
               >
-                <Avatar size={"sm"} bgColor="gray.300" />
+                <Avatar color="gray.300" size={"sm"} />
               </MenuButton>
-              <MenuList>
-                <MenuItem>Link 1</MenuItem>
-                <MenuItem>Link 2</MenuItem>
+              <MenuList alignItems={"center"}>
+                <br />
+                <Center>
+                  <Avatar size={"2xl"} />
+                </Center>
+                <br />
+                <Center>
+                  <p>Username</p>
+                </Center>
+                <br />
                 <MenuDivider />
-                <MenuItem>Link 3</MenuItem>
+                <MenuItem>Your Servers</MenuItem>
+                <MenuItem>Account Settings</MenuItem>
+                <MenuItem>Logout</MenuItem>
               </MenuList>
             </Menu>
           </Flex>
