@@ -31,6 +31,7 @@ def add_notification(request: NotificationRequest, session: Session = Depends(ge
         stop=request.stop,
         email=request.email,
         time=notification_time,
+        user_id=request.user_id
     )
     session.add(notification)
     session.commit()
