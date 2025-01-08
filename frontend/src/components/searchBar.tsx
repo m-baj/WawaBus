@@ -73,8 +73,9 @@ const SearchBar = () => {
                   onClick={() => handleRemoveLine(line)}
                   bgColor="blue.500"
                   border="none"
+                  px="calc(0.5rem - 1px)"
                   _hover={{
-                    border: "2px solid",
+                    border: "1px solid",
                     borderColor: "red.500",
                   }}
                 >
@@ -95,7 +96,7 @@ const SearchBar = () => {
           _hover={{ borderColor: "gray.450" }}
           pl={
             selectedLines.length > 0
-              ? `${selectedLines.length * 3.2}rem`
+              ? `${selectedLines.length * 2.5}rem`
               : "0.5rem"
           }
         />
