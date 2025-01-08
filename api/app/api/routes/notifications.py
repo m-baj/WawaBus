@@ -13,7 +13,7 @@ router = APIRouter(prefix="/notifications", tags=["notifications"])
 @router.post("/", response_model=Notification)
 def add_notification(request: NotificationRequest, session: Session = Depends(get_session), tasks: BackgroundTasks = BackgroundTasks()):
     current_time = datetime.now()
-    notification_time = current_time.replace(hour=request.hour, minute=request.minute, second=0, microsecond=0)
+    notification_time = datetime.fromisoformat(request.time)
 
     if notification_time <= current_time:
         notification_time += timedelta(days=1)

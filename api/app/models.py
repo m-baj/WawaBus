@@ -13,11 +13,10 @@ class MailBody(SQLModel):
     body: str
 
 class NotificationRequest(SQLModel):
-    hour: int = Field(..., ge=0, le=23, description="Godzina powiadomienia (0-23)")
-    minute: int = Field(..., ge=0, le=59, description="Minuta powiadomienia (0-59)")
     line: str = Field(..., description="Numer linii autobusowej")
     stop: str = Field(..., description="Nazwa pętli/przystanku")
     email: str = Field(..., description="Adres e-mail użytkownika")
+    time: str = Field(..., description="Godzina powiadomienia")
     user_id: int = Field(..., description="Id użytkownika")
 
 

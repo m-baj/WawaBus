@@ -33,5 +33,5 @@ def login(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Incorrect username or password",
         )
-    access_token = create_access_token(data={"sub": user.email})
+    access_token = create_access_token(data={"id": user.id, "email": user.email})
     return {"access_token": access_token, "token_type": "bearer"}

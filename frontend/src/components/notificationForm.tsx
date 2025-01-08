@@ -44,6 +44,13 @@ const NotificationForm = () => {
         },
     });
 
+    useEffect(() => {
+        if (user) {
+            setValue("email", user.email);
+            setValue("user_id", user.id);
+        }
+    }, [user, setValue]);
+
     const showToast = useCustomToast();
 
     const onSubmit = async (data: NotificationFormData) => {
