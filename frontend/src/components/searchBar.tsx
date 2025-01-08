@@ -11,8 +11,9 @@ import {
   InputLeftElement,
 } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
+import { li } from "framer-motion/client";
 
-const lineNumbers = [14, 167, 210, 213, 669];
+const lineNumbers = [144, 167, 210, 213, 669, 712];
 
 const SearchBar = () => {
   const [query, setQuery] = useState("");
@@ -48,38 +49,37 @@ const SearchBar = () => {
 
   return (
     <Box position="relative" width="100%">
-      <InputGroup borderRadius={5} size="sm">
+      <InputGroup borderRadius={5} _focusVisible={{ borderColor: "blue.500" }}>
         {selectedLines.length > 0 && (
           <InputLeftElement
-            bg="gray.200"
             padding={0}
-            border="none"
             display="flex"
             alignItems="center"
-            maxWidth="100%"
+            borderLeftRadius={5}
+            borderRight={0}
+            borderColor="gray.450"
+            flexWrap="wrap"
+            width="auto"
           >
-            <HStack spacing={1} px={2} maxHeight="0%">
+            <HStack spacing={1} pl={1}>
               {selectedLines.map((line) => (
                 <Box
                   key={line}
                   bg="blue.500"
                   color="white"
-                  px={2}
                   py={1}
                   borderRadius="md"
                   fontSize="sm"
                   display="flex"
                   alignItems="center"
                 >
-                  {line}
                   <Button
-                    ml={2}
                     size="xs"
                     variant="ghost"
                     color="white"
                     onClick={() => handleRemoveLine(line)}
                   >
-                    x
+                    {line}
                   </Button>
                 </Box>
               ))}
@@ -92,7 +92,13 @@ const SearchBar = () => {
           value={query}
           onChange={handleInputChange}
           border="1px solid #949494"
-          pl={selectedLines.length > 0 ? "3.5rem" : "1rem"} // Adjust padding dynamically
+          borderRadius={5}
+          _hover={{ borderColor: "gray.450" }}
+          pl={
+            selectedLines.length > 0
+              ? `${selectedLines.length * 2.5}rem`
+              : "0.5rem"
+          }
         />
         <InputRightElement
           pointerEvents="none"
