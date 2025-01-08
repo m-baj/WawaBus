@@ -9,9 +9,9 @@ import {
   VStack,
   HStack,
   InputLeftElement,
+  Text,
 } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
-import { li } from "framer-motion/client";
 
 const lineNumbers = [144, 167, 210, 213, 669, 712];
 
@@ -19,13 +19,13 @@ const SearchBar = () => {
   const [query, setQuery] = useState("");
   const [filteredLines, setFilteredLines] = useState<number[]>([]);
   const [selectedLines, setSelectedLines] = useState<number[]>([]);
+  const [isListVisible, setIsListVisible] = useState(true);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
     setQuery(input);
 
     if (input) {
-      // Filter lineNumbers based on input
       const filtered = lineNumbers.filter((line) =>
         line.toString().startsWith(input)
       );
@@ -37,14 +37,18 @@ const SearchBar = () => {
 
   const handleSelectLine = (line: number) => {
     if (!selectedLines.includes(line)) {
-      setSelectedLines((prev) => [...prev, line]); // Add the line to selected lines
+      setSelectedLines((prev) => [...prev, line]);
     }
     setQuery("");
     setFilteredLines([]);
   };
 
   const handleRemoveLine = (line: number) => {
-    setSelectedLines((prev) => prev.filter((item) => item !== line)); // Remove the line
+    setSelectedLines((prev) => prev.filter((item) => item !== line));
+  };
+
+  const handleBlur = () => {
+    setIsListVisible(false);
   };
 
   return (
@@ -63,40 +67,35 @@ const SearchBar = () => {
           >
             <HStack spacing={1} pl={1}>
               {selectedLines.map((line) => (
-                <Box
+                <Button
                   key={line}
-                  bg="blue.500"
-                  color="white"
-                  py={1}
-                  borderRadius="md"
-                  fontSize="sm"
-                  display="flex"
-                  alignItems="center"
+                  size="sm"
+                  onClick={() => handleRemoveLine(line)}
+                  bgColor="blue.500"
+                  border="none"
+                  _hover={{
+                    border: "2px solid",
+                    borderColor: "red.500",
+                  }}
                 >
-                  <Button
-                    size="xs"
-                    variant="ghost"
-                    color="white"
-                    onClick={() => handleRemoveLine(line)}
-                  >
-                    {line}
-                  </Button>
-                </Box>
+                  <Text color="white">{line}</Text>
+                </Button>
               ))}
             </HStack>
           </InputLeftElement>
         )}
         <Input
           type="text"
-          placeholder="Wpisz numer linii"
+          placeholder="Wprowadź numer linii"
           value={query}
           onChange={handleInputChange}
           border="1px solid #949494"
+          onFocus={() => setIsListVisible(true)}
           borderRadius={5}
           _hover={{ borderColor: "gray.450" }}
           pl={
             selectedLines.length > 0
-              ? `${selectedLines.length * 2.5}rem`
+              ? `${selectedLines.length * 3.2}rem`
               : "0.5rem"
           }
         />
@@ -105,7 +104,7 @@ const SearchBar = () => {
           children={<Search2Icon color="gray.600" />}
         />
       </InputGroup>
-      {filteredLines.length > 0 && (
+      {isListVisible && filteredLines.length > 0 && (
         <VStack
           position="absolute"
           top="100%"
@@ -120,6 +119,7 @@ const SearchBar = () => {
           spacing={0}
           mt={1}
           boxShadow="lg"
+          onBlur={handleBlur}
         >
           {filteredLines.map((line) => (
             <Box
@@ -129,7 +129,7 @@ const SearchBar = () => {
               textAlign="left"
               px={3}
               py={2}
-              _hover={{ bg: "gray.100" }}
+              _hover={{ bg: "gray.200" }}
               onClick={() => handleSelectLine(line)}
             >
               {line}
