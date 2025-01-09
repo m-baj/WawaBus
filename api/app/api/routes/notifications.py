@@ -7,6 +7,7 @@ from app.core.db import get_session
 from sqlmodel import select, Session
 from app.core.email import send_email
 from fastapi import BackgroundTasks
+import app.crud as crud
 
 router = APIRouter(prefix="/notifications", tags=["notifications"])
 
@@ -66,3 +67,7 @@ def delete_notification(task_id: str, session: Session = Depends(get_session)):
     session.delete(notification)
     session.commit()
     return notification
+
+@router.get("/user/{user_id}", response_model=List[Notification])
+def list_user_notifications(user_id: int, session: Session = Depends(get_session)):
+    return crud.get_user_notifications(session, user_id)

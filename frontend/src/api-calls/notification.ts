@@ -30,3 +30,34 @@ export const createNotification = async (data: NotificationFormData): Promise<Re
     };
   }
 };
+
+type Notification = {
+  id: string;
+  line: string;
+  stop: string;
+  email: string;
+  time: string;
+  user_id: number;
+};
+
+export const fetchNotifications = async (user_id: number): Promise<Notification[]> => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8000/api/v1/notifications/user/${user_id}`
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("API Error:", error.response.data);
+    return [];
+  }
+};
+
+export const deleteNotification = async (id: string): Promise<boolean> => {
+  try {
+    await axios.delete(`http://localhost:8000/api/v1/notifications/${id}`);
+    return true;
+  } catch (error: any) {
+    console.error("API Error:", error.response.data);
+    return false;
+  }
+};

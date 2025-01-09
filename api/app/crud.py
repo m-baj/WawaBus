@@ -15,3 +15,8 @@ def create_user(session: Session, email: str, hashed_password: str) -> User:
     session.commit()
     session.refresh(user)
     return user
+
+def get_user_notifications(session: Session, user_id: int):
+    statement = select(User).where(User.id == user_id)
+    user = session.exec(statement).first()
+    return user.notifications
