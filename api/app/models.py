@@ -1,10 +1,13 @@
-from sqlmodel import SQLModel, Field, Relationship
 from datetime import datetime
-from typing import List, Optional
 from typing import Optional, List
-from sqlalchemy.dialects.postgresql import ARRAY
-from sqlalchemy import Column, Integer
 
+from sqlalchemy import Column, Integer
+from sqlalchemy.dialects.postgresql import ARRAY
+from sqlmodel import SQLModel, Field, Relationship
+
+
+class LocationTime(SQLModel):
+    time: datetime
 
 class MailBody(SQLModel):
     id: Optional[int] = Field(default=None, primary_key=True)
