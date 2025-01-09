@@ -20,6 +20,9 @@ import {
   Center,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, AddIcon } from "@chakra-ui/icons";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+
 
 interface Props {
   children: React.ReactNode;
@@ -41,7 +44,7 @@ const NavLink = (props: Props) => {
       }}
       href={"#"}
     >
-      {children}
+      <Link href="/notifications_list">{children}</Link>
     </Box>
   );
 };
@@ -49,6 +52,8 @@ const NavLink = (props: Props) => {
 export default function WithAction() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const username = "Username";
+
+
 
   return (
     <>
@@ -83,7 +88,7 @@ export default function WithAction() {
               mr={4}
               leftIcon={<AddIcon />}
             >
-              <Box display={{ base: "none", md: "inline" }}>
+              <Box display={{ base: "none", md: "inline" }} onClick={() => redirect("/notification")}>
                 Nowe powiadomienie
               </Box>
             </Button>
