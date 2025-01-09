@@ -4,6 +4,7 @@ import NavBar from "@/components/navBar";
 import SearchBar from "@/components/searchBar";
 import { Box, Flex, Stack, Heading, Text } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
+import Head from "next/head";
 
 const Map = dynamic(() => import("@/components/map"), { ssr: false });
 
@@ -19,15 +20,20 @@ export default function Home() {
           maxWidth="1200px"
           alignItems="center"
         >
-          <Heading>Witamy na stronie WawaBus!</Heading>
-          <Text>Filtruj wyświetlane linie</Text>
+          <Heading as="h1" textAlign="center">
+            Witamy na stronie WawaBus!{" "}
+          </Heading>
+          <Heading size="md" textAlign="center">
+            Sprawdź aktualne położenie autobusów w Warszawie
+          </Heading>
+
           <Flex width="60%" justifyContent="center">
             <SearchBar />
           </Flex>
           <Box
-            width="100%" // Szerokość będzie zależała od rodzica
-            maxWidth="1000px" // Maksymalna szerokość mapy
-            aspectRatio={1} // Stosunek szerokości do wysokości 1:1
+            width="100%"
+            maxWidth="1000px"
+            aspectRatio={1}
             border="1px solid #ccc"
           >
             <Map />
