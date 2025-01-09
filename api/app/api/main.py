@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.routes import utils, mailsender, notifications, auth, users
+from app.api.routes import utils, mailsender, notifications, auth, users, location
 
 
 api_router = APIRouter()
@@ -9,3 +9,4 @@ api_router.include_router(mailsender.router)
 api_router.include_router(notifications.router)
 api_router.include_router(auth.router)
 api_router.include_router(users.router)
+api_router.include_router(location.router)

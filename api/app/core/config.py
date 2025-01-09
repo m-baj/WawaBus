@@ -56,6 +56,11 @@ class Settings(BaseSettings):
     SMTP_USER: str | None = None
     SMTP_PASSWORD: str | None = None
 
+    MONGO_USERNAME: str
+    MONGO_PASSWORD: str
+    MONGO_DATABASE: str
+    MONGO_HOST: str
+
     @computed_field
     @property
     def SMTP_config(self) -> Dict[str, Any]:
