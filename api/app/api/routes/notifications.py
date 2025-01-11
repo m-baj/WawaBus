@@ -7,13 +7,14 @@ from app.core.db import get_session
 from sqlmodel import select, Session
 from app.core.email import send_email
 from fastapi import BackgroundTasks
+import app.crud as crud
 
 router = APIRouter(prefix="/notifications", tags=["notifications"])
 
 @router.post("/", response_model=Notification)
 def add_notification(request: NotificationRequest, session: Session = Depends(get_session), tasks: BackgroundTasks = BackgroundTasks()):
     current_time = datetime.now()
-    notification_time = current_time.replace(hour=request.hour, minute=request.minute, second=0, microsecond=0)
+    notification_time = datetime.fromisoformat(request.time)
 
     if notification_time <= current_time:
         notification_time += timedelta(days=1)
@@ -31,6 +32,7 @@ def add_notification(request: NotificationRequest, session: Session = Depends(ge
         stop=request.stop,
         email=request.email,
         time=notification_time,
+        user_id=request.user_id
     )
     session.add(notification)
     session.commit()
@@ -65,3 +67,7 @@ def delete_notification(task_id: str, session: Session = Depends(get_session)):
     session.delete(notification)
     session.commit()
     return notification
+
+@router.get("/user/{user_id}", response_model=List[Notification])
+def list_user_notifications(user_id: int, session: Session = Depends(get_session)):
+    return crud.get_user_notifications(session, user_id)
