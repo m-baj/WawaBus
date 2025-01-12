@@ -61,44 +61,44 @@ services:
     build:
       context: ./api
 
-  frontend:
-    build:
-      context: ./frontend
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-    restart: "no"
-    networks:
-      - default
-    depends_on:
-      backend-api:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+#  frontend:
+#    build:
+#      context: ./frontend
+#    ports:
+#      - "3000:3000"
+#    environment:
+#      - NODE_ENV=production
+#    restart: "no"
+#    networks:
+#      - default
+#    depends_on:
+#      backend-api:
+#        condition: service_healthy
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
 
-  data-retrieval:
-    image: '${DOCKER_IMAGE_DATA_RETRIEVAL?Variable not set}:${TAG-latest}'
-    restart: "no"
-    networks:
-      - default
-    build:
-        context: ./data_retrieval
-    depends_on:
-      nosql-db:
-        condition: service_healthy
-    environment:
-      - MONGO_HOST=${MONGO_HOST}
-      - MONGO_PORT=${MONGO_PORT}
-      - MONGO_USERNAME=${MONGO_USERNAME}
-      - MONGO_PASSWORD=${MONGO_PASSWORD}
-      - MONGO_DATABASE=${MONGO_DATABASE}
-      - WARSAW_API_URL=${WARSAW_API_URL}
-      - WARSAW_API_KEY=${WARSAW_API_KEY}
-      - HEARTBEAT=${HEARTBEAT}
+#  data-retrieval:
+#    image: '${DOCKER_IMAGE_DATA_RETRIEVAL?Variable not set}:${TAG-latest}'
+#    restart: "no"
+#    networks:
+#      - default
+#    build:
+#        context: ./data_retrieval
+#    depends_on:
+#      nosql-db:
+#        condition: service_healthy
+#    environment:
+#      - MONGO_HOST=${MONGO_HOST}
+#      - MONGO_PORT=${MONGO_PORT}
+#      - MONGO_USERNAME=${MONGO_USERNAME}
+#      - MONGO_PASSWORD=${MONGO_PASSWORD}
+#      - MONGO_DATABASE=${MONGO_DATABASE}
+#      - WARSAW_API_URL=${WARSAW_API_URL}
+#      - WARSAW_API_KEY=${WARSAW_API_KEY}
+#      - HEARTBEAT=${HEARTBEAT}
 
 
 
