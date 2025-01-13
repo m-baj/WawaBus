@@ -8,6 +8,7 @@ from app.core.security import (
     create_access_token,
 )
 from app.core.db import get_session
+from app.scheduler import start_scheduler
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -34,4 +35,8 @@ def login(
             detail="Incorrect username or password",
         )
     access_token = create_access_token(data={"id": user.id, "email": user.email})
+
+    #starting the notification scheduler after successful login
+    start_scheduler(user.id)
+
     return {"access_token": access_token, "token_type": "bearer"}
