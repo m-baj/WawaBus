@@ -18,7 +18,6 @@ app = FastAPI(
 )
 
 init_db()
-start_scheduler()
 
 if settings.all_cors_origins:
     app.add_middleware(
