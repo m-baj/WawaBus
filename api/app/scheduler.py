@@ -2,7 +2,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from app.core.email import send_email
 from app.models import Notification
 from app.core.db import get_session
-from api.crud import check_bus_status
+from app.crud import check_bus_status
 
 def send_scheduled_email(notification_id: str):
     session = next(get_session())
