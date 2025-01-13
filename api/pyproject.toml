@@ -24,6 +24,7 @@ dependencies = [
     "authlib<1.0.0,>=0.15.3",
     "starlette<1.0.0,>=0.16.0",
     "itsdangerous<2.0.0,>=1.1.0",
+    "httpx<1.0.0,>=0.25.1"
 ]
 
 [tool.uv]
