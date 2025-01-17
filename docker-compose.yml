@@ -62,6 +62,7 @@ services:
       context: ./api
 
   frontend:
+    image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}'
     build:
       context: ./frontend
     ports:

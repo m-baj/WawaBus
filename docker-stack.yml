@@ -7,17 +7,17 @@ services:
     depends_on:
       sql-db:
         condition: service_healthy
-        restart: true
         required: true
     environment:
       BACKEND_CORS_ORIGINS: http://localhost,http://localhost:5173,https://localhost,https://localhost:5173
-      DOCKER_IMAGE_BACKEND: backend-api
-      DOCKER_IMAGE_DATA_RETRIEVAL: data-retrieval
+      DOCKER_IMAGE_BACKEND: localhost:5000/backend-api
+      DOCKER_IMAGE_DATA_RETRIEVAL: localhost:5000/data-retrieval
+      DOCKER_IMAGE_FRONTEND: localhost:5000/frontend
       DOMAIN: localhost
-      FRONTEND_HOST: http://localhost:5173
+      FRONTEND_HOST: http://localhost:3000
       HEARTBEAT: "60"
       MONGO_DATABASE: warsaw-api-data
-      MONGO_HOST: nosql-db
+      MONGO_HOST: localhost
       MONGO_PASSWORD: password
       MONGO_USERNAME: admin
       POSTGRES_DB: app
@@ -26,6 +26,13 @@ services:
       POSTGRES_PORT: "5432"
       POSTGRES_USER: postgres
       PROJECT_NAME: WawaBus
+      SECRET_KEY: super
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PASSWORD: gzevjgsqwctgmsbj
+      SMTP_PORT: "587"
+      SMTP_SSL: "False"
+      SMTP_TLS: "True"
+      SMTP_USER: papprojektbiblioteki@gmail.com
       WARSAW_API_KEY: 81658e47-99ea-4424-a3b4-c5228a8034aa
       WARSAW_API_URL: https://api.um.warszawa.pl/api
     healthcheck:
@@ -37,7 +44,7 @@ services:
       timeout: 5s
       interval: 10s
       retries: 5
-    image: backend-api:latest
+    image: localhost:5000/backend-api:latest
     networks:
       default: null
     ports:
@@ -50,16 +57,20 @@ services:
     build:
       context: /home/pawel/projekty/pis-24z/data_retrieval
       dockerfile: Dockerfile
+    depends_on:
+      nosql-db:
+        condition: service_healthy
+        required: true
     environment:
       HEARTBEAT: "60"
       MONGO_DATABASE: warsaw-api-data
-      MONGO_HOST: nosql-db
+      MONGO_HOST: localhost
       MONGO_PASSWORD: password
       MONGO_PORT: ""
       MONGO_USERNAME: admin
       WARSAW_API_KEY: 81658e47-99ea-4424-a3b4-c5228a8034aa
       WARSAW_API_URL: https://api.um.warszawa.pl/api
-    image: data-retrieval:latest
+    image: localhost:5000/data-retrieval:latest
     networks:
       default: null
     restart: "no"
@@ -82,6 +93,7 @@ services:
       timeout: 5s
       interval: 10s
       retries: 5
+    image: localhost:5000/frontend:latest
     networks:
       default: null
     ports:
@@ -97,10 +109,8 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
     healthcheck:
       test:
-        - CMD
-        - mongo
-        - --eval
-        - db.adminCommand('ping')
+        - CMD-SHELL
+        - echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
       timeout: 10s
       interval: 10s
       retries: 5
@@ -122,13 +132,14 @@ services:
   sql-db:
     environment:
       BACKEND_CORS_ORIGINS: http://localhost,http://localhost:5173,https://localhost,https://localhost:5173
-      DOCKER_IMAGE_BACKEND: backend-api
-      DOCKER_IMAGE_DATA_RETRIEVAL: data-retrieval
+      DOCKER_IMAGE_BACKEND: localhost:5000/backend-api
+      DOCKER_IMAGE_DATA_RETRIEVAL: localhost:5000/data-retrieval
+      DOCKER_IMAGE_FRONTEND: localhost:5000/frontend
       DOMAIN: localhost
-      FRONTEND_HOST: http://localhost:5173
+      FRONTEND_HOST: http://localhost:3000
       HEARTBEAT: "60"
       MONGO_DATABASE: warsaw-api-data
-      MONGO_HOST: nosql-db
+      MONGO_HOST: localhost
       MONGO_PASSWORD: password
       MONGO_USERNAME: admin
       PGDATA: /var/lib/postgresql/data/pgdata
@@ -138,6 +149,13 @@ services:
       POSTGRES_PORT: "5432"
       POSTGRES_USER: postgres
       PROJECT_NAME: WawaBus
+      SECRET_KEY: super
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PASSWORD: gzevjgsqwctgmsbj
+      SMTP_PORT: "587"
+      SMTP_SSL: "False"
+      SMTP_TLS: "True"
+      SMTP_USER: papprojektbiblioteki@gmail.com
       WARSAW_API_KEY: 81658e47-99ea-4424-a3b4-c5228a8034aa
       WARSAW_API_URL: https://api.um.warszawa.pl/api
     healthcheck:

@@ -13,3 +13,10 @@ test-data-retrieval:
     - sh ./scripts/gitlab-test-data-retrieval.sh
   tags:
     - test
+
+build-and-push:
+  stage: deploy
+  script:
+    - sh ./scripts/gitlab-build-and-push.sh
+  tags:
+    - deploy
