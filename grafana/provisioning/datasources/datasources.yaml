@@ -1,0 +1,32 @@
+piVersion: 1
+
+prune: true
+
+deleteDatasources:
+  - name: Prometheus
+  - name: Postgres
+    orgId: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    orgId: 1
+    url: http://prometheus:9090
+
+  - name: Postgres
+    type: postgres
+    url: sql-db:5432
+    access: proxy
+    user: postgres
+    secureJsonData:
+      password: 'postgresqlpassword'
+    jsonData:
+      database: app
+      sslmode: 'disable' # disable/require/verify-ca/verify-full
+      maxOpenConns: 100 # Grafana v5.4+
+      maxIdleConns: 100 # Grafana v5.4+
+      maxIdleConnsAuto: true # Grafana v9.5.1+
+      connMaxLifetime: 14400 # Grafana v5.4+
+      postgresVersion: 1000 # 903=9.3, 904=9.4, 905=9.5, 906=9.6, 1000=10
+      timescaledb: false
