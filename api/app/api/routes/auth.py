@@ -74,15 +74,15 @@ async def google_redirect_handler(request: Request, session: Session = Depends(g
 
         email = user_info["email"]
         print(f"Email: {email}")
-        user = get_user_by_username(session, email)
+        user = get_user_by_email(session, email)
         print(f"User: {user}")
         if not user:
             print("User not found, creating a new user...")
             create_user(session, email, "google")
             print("User created")
+            user = get_user_by_email(email)
 
-        access_token = create_access_token(data={"sub": user_info["email"]})
-        # access_token = create_access_token(data={"id": user.id, "email": user.email})
+        access_token = create_access_token(data={"id": user.id, "email": user.email})
         return JSONResponse(content={"access_token": access_token, "user": user_info})
     except Exception as e:
         raise HTTPException(status_code=400, detail="Authentication failed")
