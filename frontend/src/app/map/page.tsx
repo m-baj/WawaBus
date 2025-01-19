@@ -1,5 +1,6 @@
 "use client";
 import { Footer } from "@/components/footer";
+import { useState } from "react";
 import NavBar from "@/components/navBar";
 import SearchBar from "@/components/searchBar";
 import { Box, Flex, Stack, Heading, Text } from "@chakra-ui/react";
@@ -9,6 +10,7 @@ import Head from "next/head";
 const Map = dynamic(() => import("@/components/map"), { ssr: false });
 
 export default function Home() {
+  const [selectedLines, setSelectedLines] = useState<number[]>([]);
   return (
     <>
       <NavBar />
@@ -28,7 +30,10 @@ export default function Home() {
           </Heading>
 
           <Flex width="60%" justifyContent="center">
-            <SearchBar />
+            <SearchBar
+              selectedLines={selectedLines}
+              setSelectedLines={setSelectedLines}
+            />
           </Flex>
           <Box
             width="100%"
@@ -36,7 +41,7 @@ export default function Home() {
             aspectRatio={1}
             border="1px solid #ccc"
           >
-            <Map />
+            <Map selectedLines={selectedLines} />
           </Box>
         </Stack>
       </div>
