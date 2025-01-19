@@ -68,7 +68,7 @@ export default function Map() {
     <MapContainer
       center={[52.231074, 21.010103]}
       zoom={16}
-      style={{ height: "75vh", width: "100%", border: "1px solid #949494" }}
+      style={{ height: "100%", width: "100%", border: "1px solid #949494" }}
     >
       {/* Leaflet CSS */}
       <link
