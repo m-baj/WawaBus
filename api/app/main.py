@@ -6,6 +6,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from app.core.config import settings
 from app.api.main import api_router
 from app.core.db import init_db
+from app.scheduler import start_scheduler
 
 def custom_generate_unique_id(route: APIRoute) -> str:
     return f"{route.tags[0]}-{route.name}"
