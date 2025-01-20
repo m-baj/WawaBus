@@ -8,7 +8,7 @@ const AuthLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
       {" "}
       <div className="flex justify-center flex-grow">
         {" "}
-        <Stack spacing={5} align="center" justify="center">
+        <Stack spacing={5} align="center" justify="center" paddingBottom={5}>
           <img src="/assets/logo.png" alt="logo" width="200" />
           <main>{children}</main>
         </Stack>

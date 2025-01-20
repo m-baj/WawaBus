@@ -14,6 +14,7 @@ import { NotificationFormData } from "@/types";
 import { createNotification } from "@/api-calls/notification";
 import useCustomToast from "@/hooks/useCustomToast";
 import useAuth from "@/hooks/useAuth";
+import busLines from "@/utils";
 
 const formatDate = (date: Date): string => {
     const pad = (num: number) => (num < 10 ? `0${num}` : num);
@@ -83,6 +84,7 @@ const NotificationForm = () => {
                         type="text"
                         {...register("line", {
                             required: "Linia jest wymagana",
+                            validate: value => busLines.includes(value) || "Nieprawidłowy numer linii"
                         })}
                         placeholder="Linia"
                         variant="filled"

@@ -1,17 +1,26 @@
 "use client";
 import { Footer } from "@/components/footer";
-import { useState } from "react";
 import NavBar from "@/components/navBar";
 import SearchBar from "@/components/searchBar";
-import { Box, Flex, Stack, Heading, Text } from "@chakra-ui/react";
+import { Box, Flex, Stack, Heading, Center, Spinner, Text } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import jwt_decode from "jwt-decode";
 
 const Map = dynamic(() => import("@/components/map"), { ssr: false });
+interface DecodedToken {
+  id: number;
+  email: string;
+  exp: number;
+}
 
-export default function Home() {
+export default function MapPage() {
   const [selectedLines, setSelectedLines] = useState<string[]>([]);
   const [lineNumbers, setLineNumbers] = useState<string[]>([]);
+
+
   return (
     <>
       <NavBar />
