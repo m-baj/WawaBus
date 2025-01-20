@@ -14,8 +14,9 @@ from starlette.requests import Request
 from starlette.config import Config
 from starlette.responses import JSONResponse
 import httpx
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, HTMLResponse
 from app.scheduler import start_scheduler
+import json
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -43,7 +44,6 @@ def login(
         )
     access_token = create_access_token(data={"id": user.id, "email": user.email})
 
-    #starting the notification scheduler after successful login
     start_scheduler(user.id)
 
     return {"access_token": access_token, "token_type": "bearer"}
@@ -65,10 +65,11 @@ async def login_via_google(request: Request):
 @router.get("/login/google/callback")
 async def google_redirect_handler(request: Request, session: Session = Depends(get_session)):
     try:
-        token = await oauth.google.authorize_access_token(request)
-        print(f"Token: {token}")
+        google_token = await oauth.google.authorize_access_token(request)
+        print(f"Token: {google_token}")
+
         userinfo_endpoint = oauth.google.server_metadata.get("userinfo_endpoint")
-        headers = {"Authorization": f"Bearer {token['access_token']}"}
+        headers = {"Authorization": f"Bearer {google_token['access_token']}"}
         async with httpx.AsyncClient() as client:
             response = await client.get(userinfo_endpoint, headers=headers)
             user_info = response.json()
@@ -83,15 +84,19 @@ async def google_redirect_handler(request: Request, session: Session = Depends(g
         print(f"User: {user}")
         if not user:
             print("User not found, creating a new user...")
-            create_user(session, email, "google")
+            create_user(session, email, hashed_password=None, is_oauth=True)
             print("User created")
-            user = get_user_by_email(email)
+            user = get_user_by_email(session, email)
 
-        access_token = create_access_token(data={"id": user.id, "email": user.email})
-        return JSONResponse(content={"access_token": access_token, "user": user_info})
+        token = create_access_token(data={"id": user.id, "email": user.email})
+        print(f"Generated Token: {token}")
+
+        redirect_url = f"{settings.FRONTEND_HOST}/map#token={token}"
+
+        return RedirectResponse(url=redirect_url)
     except Exception as e:
+        print(f"Error in google_redirect_handler: {e}")
         raise HTTPException(status_code=400, detail="Authentication failed")
-
 
 @router.get("/logout")
 async def logout(request: Request):
