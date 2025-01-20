@@ -111,7 +111,14 @@ export default function WithAction() {
                 <Center>{username}</Center>
                 <br />
                 <MenuDivider />
-                <MenuItem>Logout</MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    localStorage.removeItem("token");
+                    redirect("/auth/login");
+                  }}
+                >
+                  Logout
+                </MenuItem>
               </MenuList>
             </Menu>
           </Flex>
