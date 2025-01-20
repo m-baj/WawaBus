@@ -20,6 +20,7 @@ export default function Map(props: MapProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log("Fetching bus data...");
     const loadMarkersFromStorage = () => {
       const savedMarkers = localStorage.getItem("busMarkers");
       if (savedMarkers) {
@@ -66,7 +67,7 @@ export default function Map(props: MapProps) {
     const interval = setInterval(fetchBusData, 60000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [window.location.pathname]);
 
   useEffect(() => {
     console.log("Filtered lines:", props.selectedLines);

@@ -31,6 +31,10 @@ const createCustomIcon = (busNumber: string) => {
           font-size: 12px;
           font-weight: bold;
           pointer-events: none;
+          white-space: nowrap; /* 🔥 Zapobiega zawijaniu tekstu */
+          width: auto; /* 🔥 Dynamiczna szerokość */
+          min-width: 30px; /* 🔥 Minimalna szerokość */
+          text-align: center; /* 🔥 Wyrównanie tekstu */
         ">
           ${busNumber}
         </div>
