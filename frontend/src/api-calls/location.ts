@@ -9,12 +9,6 @@ export const fetchLocations = async (
   timestamp: string
 ): Promise<LocationResponse> => {
   try {
-    let date = new Date(timestamp);
-    date.setHours(date.getHours() - 1);
-    timestamp = date.toISOString();
-    if (new Date(timestamp) > new Date()) {
-      timestamp = new Date().toISOString();
-    }
     console.log("Timestamp:", timestamp);
 
     const payload: LocationRequest = {

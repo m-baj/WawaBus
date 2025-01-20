@@ -39,21 +39,27 @@ services:
       - "5433:5432"
 
   backend-api:
-    image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
+    image: "${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}"
     restart: "no"
     networks:
       - default
     depends_on:
       sql-db:
         condition: service_healthy
-#        restart: true
+    #        restart: true
     env_file:
       - .env
     ports:
       - "8000:8000"
 
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/utils/health-check/"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:8000/api/v1/utils/health-check/",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -62,7 +68,7 @@ services:
       context: ./api
 
   frontend:
-    image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}'
+    image: "${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}"
     build:
       context: ./frontend
       args:
@@ -85,12 +91,12 @@ services:
       retries: 5
 
   data-retrieval:
-    image: '${DOCKER_IMAGE_DATA_RETRIEVAL?Variable not set}:${TAG-latest}'
+    image: "${DOCKER_IMAGE_DATA_RETRIEVAL?Variable not set}:${TAG-latest}"
     restart: "no"
     networks:
       - default
     build:
-        context: ./data_retrieval
+      context: ./data_retrieval
     depends_on:
       nosql-db:
         condition: service_healthy
@@ -103,6 +109,9 @@ services:
       - WARSAW_API_URL=${WARSAW_API_URL}
       - WARSAW_API_KEY=${WARSAW_API_KEY}
       - HEARTBEAT=${HEARTBEAT}
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
 
   postgres-exporter:
     profiles:
@@ -110,10 +119,10 @@ services:
     image: quay.io/prometheuscommunity/postgres-exporter
     container_name: postgres-exporter
     depends_on:
-        sql-db:
-          condition: service_healthy
+      sql-db:
+        condition: service_healthy
     networks:
-        - default
+      - default
     environment:
       - DATA_SOURCE_URI=${POSTGRES_HOST}:${POSTGRES_PORT}/postgres?sslmode=disable
       - DATA_SOURCE_USER=${POSTGRES_USER}
@@ -122,7 +131,7 @@ services:
     profiles:
       - deployment
     networks:
-        - default
+      - default
     image: bitnami/mongodb-exporter:0.11.0-debian-10-r75
     environment:
       - MONGODB_URI=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:27017
@@ -133,35 +142,35 @@ services:
     image: prom/prometheus
     container_name: prometheus
     networks:
-        - default
+      - default
     ports:
-      - '9090:9090'
+      - "9090:9090"
     volumes:
-      - './grafana/prometheus:/etc/prometheus'
-    command: '--config.file=/etc/prometheus/prometheus.yml'
+      - "./grafana/prometheus:/etc/prometheus"
+    command: "--config.file=/etc/prometheus/prometheus.yml"
 
   grafana:
-      profiles:
-        - deployment
-      image: grafana/grafana-enterprise
-      container_name: grafana
-      restart: unless-stopped
-      environment:
-        - DATABASE_SSL_MODE=disable
-        - GF_LOG_LEVEL=debug
-        - POSTGRES_HOST=${POSTGRES_HOST}
-        - POSTGRES_PORT=${POSTGRES_PORT}
-        - POSTGRES_USER=${POSTGRES_USER}
-        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-        - POSTGRES_DATABASE=${POSTGRES_DB}
-      ports:
-        - '4100:3000'
-      volumes:
-        - './grafana/config/grafana.ini:/etc/grafana/grafana.ini'
-        - './grafana/provisioning:/etc/grafana/provisioning'
-        - 'grafana_storage:/var/lib/grafana'
-      networks:
-        - default
+    profiles:
+      - deployment
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - DATABASE_SSL_MODE=disable
+      - GF_LOG_LEVEL=debug
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DATABASE=${POSTGRES_DB}
+    ports:
+      - "4100:3000"
+    volumes:
+      - "./grafana/config/grafana.ini:/etc/grafana/grafana.ini"
+      - "./grafana/provisioning:/etc/grafana/provisioning"
+      - "grafana_storage:/var/lib/grafana"
+    networks:
+      - default
 
 volumes:
   app-db-data:
