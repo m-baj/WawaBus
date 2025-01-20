@@ -14,8 +14,9 @@ from starlette.requests import Request
 from starlette.config import Config
 from starlette.responses import JSONResponse
 import httpx
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, HTMLResponse
 from app.scheduler import start_scheduler
+import json
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -65,10 +66,13 @@ async def login_via_google(request: Request):
 @router.get("/login/google/callback")
 async def google_redirect_handler(request: Request, session: Session = Depends(get_session)):
     try:
-        token = await oauth.google.authorize_access_token(request)
-        print(f"Token: {token}")
+        # Authorize and get token
+        google_token = await oauth.google.authorize_access_token(request)
+        print(f"Token: {google_token}")
+
+        # Fetch user info
         userinfo_endpoint = oauth.google.server_metadata.get("userinfo_endpoint")
-        headers = {"Authorization": f"Bearer {token['access_token']}"}
+        headers = {"Authorization": f"Bearer {google_token['access_token']}"}
         async with httpx.AsyncClient() as client:
             response = await client.get(userinfo_endpoint, headers=headers)
             user_info = response.json()
@@ -83,13 +87,34 @@ async def google_redirect_handler(request: Request, session: Session = Depends(g
         print(f"User: {user}")
         if not user:
             print("User not found, creating a new user...")
+            # Pass hashed_password as None and set is_oauth=True
             create_user(session, email, "google")
             print("User created")
-            user = get_user_by_email(email)
+            user = get_user_by_email(session, email)
 
-        access_token = create_access_token(data={"id": user.id, "email": user.email})
-        return JSONResponse(content={"access_token": access_token, "user": user_info})
+        token = create_access_token(data={"id": user.id, "email": user.email})
+        token_json = json.dumps(token)  # Properly escape the token
+
+        # Prepare HTML response with script to store token and redirect
+        html_content = f"""
+        <html>
+            <head>
+                <title>Redirecting...</title>
+                <script type="text/javascript">
+                    // Store the access token in localStorage
+                    localStorage.setItem('token', {token_json});
+                    // Redirect to the /map page
+                    window.location.href = '{settings.FRONTEND_HOST}/map';
+                </script>
+            </head>
+            <body>
+                <p>Redirecting to the map page...</p>
+            </body>
+        </html>
+        """
+        return HTMLResponse(content=html_content, status_code=200)
     except Exception as e:
+        print(f"Error in google_redirect_handler: {e}")
         raise HTTPException(status_code=400, detail="Authentication failed")
 
 
