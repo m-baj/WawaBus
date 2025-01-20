@@ -1,5 +1,6 @@
 "use client";
 import { Footer } from "@/components/footer";
+import { useState } from "react";
 import NavBar from "@/components/navBar";
 import SearchBar from "@/components/searchBar";
 import { Box, Flex, Stack, Heading, Center, Spinner, Text } from "@chakra-ui/react";
@@ -57,6 +58,8 @@ export default function MapPage() {
   if (!isAuthenticated) {
     return null;
   }
+  const [selectedLines, setSelectedLines] = useState<string[]>([]);
+  const [lineNumbers, setLineNumbers] = useState<string[]>([]);
   return (
     <>
       <NavBar />
@@ -76,7 +79,11 @@ export default function MapPage() {
           </Heading>
 
           <Flex width="60%" justifyContent="center">
-            <SearchBar />
+            <SearchBar
+              selectedLines={selectedLines}
+              setSelectedLines={setSelectedLines}
+              lineNumbers={lineNumbers}
+            />
           </Flex>
           <Box
             width="100%"
@@ -84,7 +91,11 @@ export default function MapPage() {
             aspectRatio={1}
             border="1px solid #ccc"
           >
-            <Map />
+            <Map
+              selectedLines={selectedLines}
+              lineNumbers={lineNumbers}
+              setLineNumbers={setLineNumbers}
+            />
           </Box>
         </Stack>
       </div>

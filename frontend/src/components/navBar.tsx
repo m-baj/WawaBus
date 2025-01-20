@@ -23,7 +23,6 @@ import { HamburgerIcon, CloseIcon, AddIcon } from "@chakra-ui/icons";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
-
 interface Props {
   children: React.ReactNode;
 }
@@ -52,8 +51,6 @@ const NavLink = (props: Props) => {
 export default function WithAction() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const username = "Username";
-
-
 
   return (
     <>
@@ -88,7 +85,10 @@ export default function WithAction() {
               mr={4}
               leftIcon={<AddIcon />}
             >
-              <Box display={{ base: "none", md: "inline" }} onClick={() => redirect("/notification")}>
+              <Box
+                display={{ base: "none", md: "inline" }}
+                onClick={() => redirect("/notification")}
+              >
                 Nowe powiadomienie
               </Box>
             </Button>
@@ -111,7 +111,6 @@ export default function WithAction() {
                 <Center>{username}</Center>
                 <br />
                 <MenuDivider />
-                <MenuItem>Account Settings</MenuItem>
                 <MenuItem>Logout</MenuItem>
               </MenuList>
             </Menu>

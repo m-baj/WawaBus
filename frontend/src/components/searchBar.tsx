@@ -12,12 +12,18 @@ import {
 } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 
-const lineNumbers = [144, 167, 210, 213, 669, 712];
+// const lineNumbers = [144, 167, 210, 213, 669, 712];
 
-const SearchBar = () => {
+interface SearchBarProps {
+  selectedLines: string[];
+  setSelectedLines: React.Dispatch<React.SetStateAction<string[]>>;
+  lineNumbers: string[];
+}
+
+const SearchBar = (props: SearchBarProps) => {
   const [query, setQuery] = useState("");
-  const [filteredLines, setFilteredLines] = useState<number[]>([]);
-  const [selectedLines, setSelectedLines] = useState<number[]>([]);
+  const [filteredLines, setFilteredLines] = useState<string[]>([]);
+
   const [isListVisible, setIsListVisible] = useState(true);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,8 +31,8 @@ const SearchBar = () => {
     setQuery(input);
 
     if (input) {
-      const filtered = lineNumbers.filter((line) =>
-        line.toString().startsWith(input)
+      const filtered = props.lineNumbers.filter((line) =>
+        line.toLowerCase().startsWith(input.toLocaleLowerCase())
       );
       setFilteredLines(filtered);
     } else {
@@ -34,16 +40,16 @@ const SearchBar = () => {
     }
   };
 
-  const handleSelectLine = (line: number) => {
-    if (!selectedLines.includes(line)) {
-      setSelectedLines((prev) => [...prev, line]);
+  const handleSelectLine = (line: string) => {
+    if (!props.selectedLines.includes(line)) {
+      props.setSelectedLines((prev) => [...prev, line]);
     }
     setQuery("");
     setFilteredLines([]);
   };
 
-  const handleRemoveLine = (line: number) => {
-    setSelectedLines((prev) => prev.filter((item) => item !== line));
+  const handleRemoveLine = (line: string) => {
+    props.setSelectedLines((prev) => prev.filter((item) => item !== line));
   };
 
   const handleBlur = () => {
@@ -53,7 +59,7 @@ const SearchBar = () => {
   return (
     <Box position="relative" width="100%">
       <InputGroup borderRadius={5} _focusVisible={{ borderColor: "blue.500" }}>
-        {selectedLines.length > 0 && (
+        {props.selectedLines.length > 0 && (
           <InputLeftElement
             padding={0}
             display="flex"
@@ -65,7 +71,7 @@ const SearchBar = () => {
             width="auto"
           >
             <HStack spacing={1} pl={1}>
-              {selectedLines.map((line) => (
+              {props.selectedLines.map((line) => (
                 <Button
                   key={line}
                   size="sm"
@@ -94,8 +100,8 @@ const SearchBar = () => {
           borderRadius={5}
           _hover={{ borderColor: "gray.450" }}
           pl={
-            selectedLines.length > 0
-              ? `${selectedLines.length * 2.5}rem`
+            props.selectedLines.length > 0
+              ? `${props.selectedLines.length * 3}rem`
               : "0.5rem"
           }
         />
