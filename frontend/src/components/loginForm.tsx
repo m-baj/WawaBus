@@ -77,7 +77,7 @@ const LoginForm = () => {
   const handleGoogleLogin = () => {
     // Optionally, use environment variables for better flexibility
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
-    const callbackUrl = process.env.NEXT_PUBLIC_GOOGLE_CALLBACK_URL || "http://localhost:3000/map";
+    // const callbackUrl = process.env.NEXT_PUBLIC_GOOGLE_CALLBACK_URL || "http://localhost:3000/map";
     window.location.href = `${backendUrl}/api/v1/auth/login/google`;
   };
 
@@ -171,7 +171,7 @@ const LoginForm = () => {
         <Text textAlign="center">
           Don't have an account?{" "}
           <Button variant="link" color="blue.500">
-            <Link href="/register">Sign up</Link>
+            <Link href="/auth/register">Sign up</Link>
           </Button>
         </Text>
       </Stack>
