@@ -31,6 +31,10 @@ const createCustomIcon = (busNumber: string) => {
           font-size: 12px;
           font-weight: bold;
           pointer-events: none;
+          white-space: nowrap; /* 🔥 Zapobiega zawijaniu tekstu */
+          width: auto; /* 🔥 Dynamiczna szerokość */
+          min-width: 30px; /* 🔥 Minimalna szerokość */
+          text-align: center; /* 🔥 Wyrównanie tekstu */
         ">
           ${busNumber}
         </div>
@@ -49,13 +53,13 @@ const BusMarker: React.FC<BusMarkerProps> = ({ bus }) => {
     <Marker icon={customIcon} position={[bus.Lat, bus.Lon]}>
       <Popup>
         <div>
-          <strong>Bus Number:</strong> {bus.VehicleNumber}
+          <strong>Numer autobusu:</strong> {bus.VehicleNumber}
           <br />
-          <strong>Lines:</strong> {bus.Lines}
+          <strong>Numer Linii:</strong> {bus.Lines}
           <br />
-          <strong>Brigade:</strong> {bus.Brigade}
+          <strong>Brygada:</strong> {bus.Brigade}
           <br />
-          <strong>Last Updated:</strong> {new Date(bus.Time).toLocaleString()}
+          <strong>Zaktualizowano:</strong> {new Date(bus.Time).toLocaleString()}
         </div>
       </Popup>
     </Marker>

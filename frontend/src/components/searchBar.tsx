@@ -11,8 +11,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
-
-// const lineNumbers = [144, 167, 210, 213, 669, 712];
+import busLines from "@/utils";
 
 interface SearchBarProps {
   selectedLines: string[];
@@ -31,7 +30,7 @@ const SearchBar = (props: SearchBarProps) => {
     setQuery(input);
 
     if (input) {
-      const filtered = props.lineNumbers.filter((line) =>
+      const filtered = busLines.filter((line) =>
         line.toLowerCase().startsWith(input.toLocaleLowerCase())
       );
       setFilteredLines(filtered);
@@ -76,6 +75,7 @@ const SearchBar = (props: SearchBarProps) => {
                   key={line}
                   size="sm"
                   onClick={() => handleRemoveLine(line)}
+                  width="30px"
                   bgColor="blue.500"
                   border="none"
                   px="calc(0.5rem - 1px)"
@@ -101,7 +101,7 @@ const SearchBar = (props: SearchBarProps) => {
           _hover={{ borderColor: "gray.450" }}
           pl={
             props.selectedLines.length > 0
-              ? `${props.selectedLines.length * 3}rem`
+              ? `${props.selectedLines.length * 2.3}rem`
               : "0.5rem"
           }
         />
