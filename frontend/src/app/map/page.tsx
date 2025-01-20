@@ -1,17 +1,46 @@
 "use client";
 import { Footer } from "@/components/footer";
-import { useState } from "react";
+import { use, useState, useEffect } from "react";
 import NavBar from "@/components/navBar";
 import SearchBar from "@/components/searchBar";
-import { Box, Flex, Stack, Heading, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Stack,
+  Heading,
+  Text,
+  Input,
+  Button,
+} from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
+import { form } from "framer-motion/client";
+import { getFormattedDateTimeInWarsaw } from "@/utils";
 
 const Map = dynamic(() => import("@/components/map"), { ssr: false });
 
 export default function Home() {
   const [selectedLines, setSelectedLines] = useState<string[]>([]);
   const [lineNumbers, setLineNumbers] = useState<string[]>([]);
+  const [dateTime, setDateTime] = useState<string>("");
+  const [maxDateTime, setMaxDateTime] = useState<string>("");
+  const [update, setUpdate] = useState<boolean>(true);
+
+  useEffect(() => {
+    const updateDateTime = () => {
+      const formattedDateTime = getFormattedDateTimeInWarsaw();
+      setDateTime(formattedDateTime);
+      setMaxDateTime(formattedDateTime);
+    };
+
+    updateDateTime();
+    if (!update) return;
+
+    const interval = setInterval(updateDateTime, 60000);
+
+    return () => clearInterval(interval);
+  }, [update]);
+
   return (
     <>
       <NavBar />
@@ -27,8 +56,41 @@ export default function Home() {
             Witamy na stronie WawaBus!{" "}
           </Heading>
           <Heading size="md" textAlign="center">
-            Sprawdź aktualne położenie autobusów w Warszawie
+            Sprawdź położenie autobusów w Warszawie
           </Heading>
+          <Text fontSize="lg">Wybierz datę i godzinę:</Text>
+          <Flex width="40%" justifyContent="center" alignItems="center" gap={2}>
+            <Input
+              type="datetime-local"
+              value={dateTime.slice(0, 16)}
+              onChange={(e) => {
+                let selectedTime = e.target.value;
+                if (!selectedTime) {
+                  const now = new Date();
+                  now.setHours(now.getHours() + 1);
+                  selectedTime = now.toISOString().slice(0, 16);
+                }
+                const formattedIso = `${selectedTime}:00.000Z`;
+                setDateTime(formattedIso);
+                setUpdate(false);
+              }}
+              max={maxDateTime.slice(0, 16)}
+              required
+            />
+
+            {!update && (
+              <Button
+                colorScheme="blue"
+                variant="link"
+                onClick={() => {
+                  setUpdate(true);
+                  setDateTime(getFormattedDateTimeInWarsaw());
+                }}
+              >
+                Resetuj
+              </Button>
+            )}
+          </Flex>
 
           <Flex width="60%" justifyContent="center">
             <SearchBar
@@ -37,6 +99,7 @@ export default function Home() {
               lineNumbers={lineNumbers}
             />
           </Flex>
+
           <Box
             width="100%"
             maxWidth="1000px"
@@ -47,6 +110,7 @@ export default function Home() {
               selectedLines={selectedLines}
               lineNumbers={lineNumbers}
               setLineNumbers={setLineNumbers}
+              timestamp={dateTime}
             />
           </Box>
         </Stack>
