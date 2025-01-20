@@ -53,13 +53,13 @@ const BusMarker: React.FC<BusMarkerProps> = ({ bus }) => {
     <Marker icon={customIcon} position={[bus.Lat, bus.Lon]}>
       <Popup>
         <div>
-          <strong>Bus Number:</strong> {bus.VehicleNumber}
+          <strong>Numer autobusu:</strong> {bus.VehicleNumber}
           <br />
-          <strong>Lines:</strong> {bus.Lines}
+          <strong>Numer Linii:</strong> {bus.Lines}
           <br />
-          <strong>Brigade:</strong> {bus.Brigade}
+          <strong>Brygada:</strong> {bus.Brigade}
           <br />
-          <strong>Last Updated:</strong> {new Date(bus.Time).toLocaleString()}
+          <strong>Zaktualizowano:</strong> {new Date(bus.Time).toLocaleString()}
         </div>
       </Popup>
     </Marker>
