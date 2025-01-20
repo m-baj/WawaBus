@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { jwtDecode } from "jwt-decode";
+import jwtDecode from "jwt-decode";
 
 interface DecodedToken {
   email: string;
