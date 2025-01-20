@@ -10,7 +10,8 @@ import Head from "next/head";
 const Map = dynamic(() => import("@/components/map"), { ssr: false });
 
 export default function Home() {
-  const [selectedLines, setSelectedLines] = useState<number[]>([]);
+  const [selectedLines, setSelectedLines] = useState<string[]>([]);
+  const [lineNumbers, setLineNumbers] = useState<string[]>([]);
   return (
     <>
       <NavBar />
@@ -33,6 +34,7 @@ export default function Home() {
             <SearchBar
               selectedLines={selectedLines}
               setSelectedLines={setSelectedLines}
+              lineNumbers={lineNumbers}
             />
           </Flex>
           <Box
@@ -41,7 +43,11 @@ export default function Home() {
             aspectRatio={1}
             border="1px solid #ccc"
           >
-            <Map selectedLines={selectedLines} />
+            <Map
+              selectedLines={selectedLines}
+              lineNumbers={lineNumbers}
+              setLineNumbers={setLineNumbers}
+            />
           </Box>
         </Stack>
       </div>

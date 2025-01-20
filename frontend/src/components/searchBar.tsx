@@ -12,16 +12,17 @@ import {
 } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 
-const lineNumbers = [144, 167, 210, 213, 669, 712];
+// const lineNumbers = [144, 167, 210, 213, 669, 712];
 
 interface SearchBarProps {
-  selectedLines: number[];
-  setSelectedLines: React.Dispatch<React.SetStateAction<number[]>>;
+  selectedLines: string[];
+  setSelectedLines: React.Dispatch<React.SetStateAction<string[]>>;
+  lineNumbers: string[];
 }
 
 const SearchBar = (props: SearchBarProps) => {
   const [query, setQuery] = useState("");
-  const [filteredLines, setFilteredLines] = useState<number[]>([]);
+  const [filteredLines, setFilteredLines] = useState<string[]>([]);
 
   const [isListVisible, setIsListVisible] = useState(true);
 
@@ -30,8 +31,8 @@ const SearchBar = (props: SearchBarProps) => {
     setQuery(input);
 
     if (input) {
-      const filtered = lineNumbers.filter((line) =>
-        line.toString().startsWith(input)
+      const filtered = props.lineNumbers.filter((line) =>
+        line.toLowerCase().startsWith(input.toLocaleLowerCase())
       );
       setFilteredLines(filtered);
     } else {
@@ -39,7 +40,7 @@ const SearchBar = (props: SearchBarProps) => {
     }
   };
 
-  const handleSelectLine = (line: number) => {
+  const handleSelectLine = (line: string) => {
     if (!props.selectedLines.includes(line)) {
       props.setSelectedLines((prev) => [...prev, line]);
     }
@@ -47,7 +48,7 @@ const SearchBar = (props: SearchBarProps) => {
     setFilteredLines([]);
   };
 
-  const handleRemoveLine = (line: number) => {
+  const handleRemoveLine = (line: string) => {
     props.setSelectedLines((prev) => prev.filter((item) => item !== line));
   };
 
@@ -100,7 +101,7 @@ const SearchBar = (props: SearchBarProps) => {
           _hover={{ borderColor: "gray.450" }}
           pl={
             props.selectedLines.length > 0
-              ? `${props.selectedLines.length * 2.5}rem`
+              ? `${props.selectedLines.length * 3}rem`
               : "0.5rem"
           }
         />

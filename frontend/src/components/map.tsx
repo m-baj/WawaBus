@@ -5,9 +5,12 @@ import { BusData, LocationResponse } from "@/types";
 import { fetchLocations } from "@/api-calls/location";
 
 import "leaflet/dist/leaflet.css";
+import { line } from "framer-motion/client";
 
 interface MapProps {
-  selectedLines: number[];
+  selectedLines: string[];
+  lineNumbers: string[];
+  setLineNumbers: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export default function Map(props: MapProps) {
@@ -40,6 +43,10 @@ export default function Map(props: MapProps) {
 
         if (data && Array.isArray(data.result)) {
           setBusData(data.result);
+          props.setLineNumbers(
+            Array.from(new Set(data.result.map((bus) => bus.Lines.toString())))
+          );
+          console.log(props.lineNumbers);
         } else {
           console.error("Unexpected data format:", data);
           throw new Error("Invalid data format received.");
@@ -65,7 +72,9 @@ export default function Map(props: MapProps) {
     console.log("Filtered lines:", props.selectedLines);
     if (props.selectedLines.length > 0) {
       setFilteredBuses(
-        busData.filter((bus) => props.selectedLines.includes(Number(bus.Lines)))
+        busData.filter((bus) =>
+          props.selectedLines.includes(bus.Lines.toString())
+        )
       );
     } else {
       setFilteredBuses(busData);
