@@ -64,7 +64,7 @@ export default function WithAction() {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={8} alignItems={"center"}>
-            <Box w="30%" onClick={() => redirect("/map")}>
+            <Box w="30%" onClick={() => redirect("/map")} cursor="pointer">
               <Image src="/assets/WawaBus.png"></Image>
             </Box>
             <HStack
