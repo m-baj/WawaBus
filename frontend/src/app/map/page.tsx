@@ -2,10 +2,20 @@
 import { Footer } from "@/components/footer";
 import NavBar from "@/components/navBar";
 import SearchBar from "@/components/searchBar";
-import { Box, Flex, Stack, Heading } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Stack,
+  Heading,
+  Text,
+  Input,
+  Button,
+} from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { form } from "framer-motion/client";
+import { getFormattedDateTimeInWarsaw } from "@/utils";
 
 const Map = dynamic(() => import("@/components/map"), { ssr: false });
 
@@ -19,14 +29,14 @@ export default function MapPage() {
       const hash = window.location.hash;
       if (hash) {
         const params = new URLSearchParams(hash.substring(1));
-        const token = params.get('token');
+        const token = params.get("token");
         if (token) {
           return token;
         }
       }
 
       const searchParams = new URLSearchParams(window.location.search);
-      const queryToken = searchParams.get('token');
+      const queryToken = searchParams.get("token");
       if (queryToken) {
         return queryToken;
       }
@@ -37,17 +47,36 @@ export default function MapPage() {
     const token = getTokenFromUrl();
 
     if (token) {
-      localStorage.setItem('token', token);
-      console.log('Token zapisany w localStorage:', token);
+      localStorage.setItem("token", token);
+      console.log("Token zapisany w localStorage:", token);
 
       if (window.history.replaceState) {
         const newUrl = window.location.origin + window.location.pathname;
-        window.history.replaceState(null, '', newUrl);
+        window.history.replaceState(null, "", newUrl);
       } else {
-        window.location.hash = '';
+        window.location.hash = "";
       }
     }
   }, [router]);
+
+  const [dateTime, setDateTime] = useState<string>("");
+  const [maxDateTime, setMaxDateTime] = useState<string>("");
+  const [update, setUpdate] = useState<boolean>(true);
+
+  useEffect(() => {
+    const updateDateTime = () => {
+      const formattedDateTime = getFormattedDateTimeInWarsaw();
+      setDateTime(formattedDateTime);
+      setMaxDateTime(formattedDateTime);
+    };
+
+    updateDateTime();
+    if (!update) return;
+
+    const interval = setInterval(updateDateTime, 60000);
+
+    return () => clearInterval(interval);
+  }, [update]);
 
   return (
     <>
@@ -64,8 +93,41 @@ export default function MapPage() {
             Witamy na stronie WawaBus!{" "}
           </Heading>
           <Heading size="md" textAlign="center">
-            Sprawdź aktualne położenie autobusów w Warszawie
+            Sprawdź położenie autobusów w Warszawie
           </Heading>
+          <Text fontSize="lg">Wybierz datę i godzinę:</Text>
+          <Flex width="40%" justifyContent="center" alignItems="center" gap={2}>
+            <Input
+              type="datetime-local"
+              value={dateTime.slice(0, 16)}
+              onChange={(e) => {
+                let selectedTime = e.target.value;
+                if (!selectedTime) {
+                  const now = new Date();
+                  now.setHours(now.getHours() + 1);
+                  selectedTime = now.toISOString().slice(0, 16);
+                }
+                const formattedIso = `${selectedTime}:00.000Z`;
+                setDateTime(formattedIso);
+                setUpdate(false);
+              }}
+              max={maxDateTime.slice(0, 16)}
+              required
+            />
+
+            {!update && (
+              <Button
+                colorScheme="blue"
+                variant="link"
+                onClick={() => {
+                  setUpdate(true);
+                  setDateTime(getFormattedDateTimeInWarsaw());
+                }}
+              >
+                Resetuj
+              </Button>
+            )}
+          </Flex>
 
           <Flex width="60%" justifyContent="center">
             <SearchBar
@@ -74,6 +136,7 @@ export default function MapPage() {
               lineNumbers={lineNumbers}
             />
           </Flex>
+
           <Box
             width="100%"
             maxWidth="1000px"
@@ -84,6 +147,7 @@ export default function MapPage() {
               selectedLines={selectedLines}
               lineNumbers={lineNumbers}
               setLineNumbers={setLineNumbers}
+              timestamp={dateTime}
             />
           </Box>
         </Stack>

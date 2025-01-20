@@ -6,11 +6,13 @@ import { fetchLocations } from "@/api-calls/location";
 
 import "leaflet/dist/leaflet.css";
 import { line } from "framer-motion/client";
+import { timeStamp } from "console";
 
 interface MapProps {
   selectedLines: string[];
   lineNumbers: string[];
   setLineNumbers: React.Dispatch<React.SetStateAction<string[]>>;
+  timestamp: string;
 }
 
 export default function Map(props: MapProps) {
@@ -20,7 +22,6 @@ export default function Map(props: MapProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("Fetching bus data...");
     const loadMarkersFromStorage = () => {
       const savedMarkers = localStorage.getItem("busMarkers");
       if (savedMarkers) {
@@ -38,8 +39,8 @@ export default function Map(props: MapProps) {
       try {
         setLoading(true);
         setError(null);
-
-        const data: LocationResponse = await fetchLocations();
+        console.log("Fetching bus data, timestamp:", props.timestamp);
+        const data: LocationResponse = await fetchLocations(props.timestamp);
         console.log("Fetched bus data:", data);
 
         if (data && Array.isArray(data.result)) {
@@ -67,7 +68,7 @@ export default function Map(props: MapProps) {
     const interval = setInterval(fetchBusData, 60000);
 
     return () => clearInterval(interval);
-  }, [window.location.pathname]);
+  }, [window.location.pathname, props.timestamp]);
 
   useEffect(() => {
     console.log("Filtered lines:", props.selectedLines);

@@ -246,7 +246,6 @@ const busLines: string[] = [
   "Z12",
   "Z18",
 
-  // Autobusy lokalne
   "L-1",
   "L-2",
   "L-3",
@@ -290,7 +289,6 @@ const busLines: string[] = [
   "L52",
   "L53",
 
-  // Linie nocne
   "N01",
   "N02",
   "N03",
@@ -345,4 +343,27 @@ const formatDate = (date: Date): string => {
   const hours = pad(date.getHours());
   const minutes = pad(date.getMinutes());
   return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
+export const getFormattedDateTimeInWarsaw = () => {
+  const now = new Date();
+
+  const options: Intl.DateTimeFormatOptions = {
+    timeZone: "Europe/Warsaw",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  };
+
+  const dateTimeFormat = new Intl.DateTimeFormat("sv-SE", options);
+  const formattedDate = dateTimeFormat.format(now);
+
+  const milliseconds = now.getMilliseconds().toString().padStart(3, "0");
+  const formattedISO = formattedDate.replace(" ", "T") + `.${milliseconds}Z`;
+
+  return formattedISO;
 };
