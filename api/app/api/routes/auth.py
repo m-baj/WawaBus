@@ -44,7 +44,6 @@ def login(
         )
     access_token = create_access_token(data={"id": user.id, "email": user.email})
 
-    #starting the notification scheduler after successful login
     start_scheduler(user.id)
 
     return {"access_token": access_token, "token_type": "bearer"}
@@ -66,11 +65,9 @@ async def login_via_google(request: Request):
 @router.get("/login/google/callback")
 async def google_redirect_handler(request: Request, session: Session = Depends(get_session)):
     try:
-        # Authorize and get token
         google_token = await oauth.google.authorize_access_token(request)
         print(f"Token: {google_token}")
 
-        # Fetch user info
         userinfo_endpoint = oauth.google.server_metadata.get("userinfo_endpoint")
         headers = {"Authorization": f"Bearer {google_token['access_token']}"}
         async with httpx.AsyncClient() as client:
@@ -87,36 +84,19 @@ async def google_redirect_handler(request: Request, session: Session = Depends(g
         print(f"User: {user}")
         if not user:
             print("User not found, creating a new user...")
-            # Pass hashed_password as None and set is_oauth=True
-            create_user(session, email, "google")
+            create_user(session, email, hashed_password=None, is_oauth=True)
             print("User created")
             user = get_user_by_email(session, email)
 
         token = create_access_token(data={"id": user.id, "email": user.email})
-        token_json = json.dumps(token)  # Properly escape the token
+        print(f"Generated Token: {token}")
 
-        # Prepare HTML response with script to store token and redirect
-        html_content = f"""
-        <html>
-            <head>
-                <title>Redirecting...</title>
-                <script type="text/javascript">
-                    // Store the access token in localStorage
-                    localStorage.setItem('token', {token_json});
-                    // Redirect to the /map page
-                    window.location.href = '{settings.FRONTEND_HOST}/map';
-                </script>
-            </head>
-            <body>
-                <p>Redirecting to the map page...</p>
-            </body>
-        </html>
-        """
-        return HTMLResponse(content=html_content, status_code=200)
+        redirect_url = f"{settings.FRONTEND_HOST}/map#token={token}"
+
+        return RedirectResponse(url=redirect_url)
     except Exception as e:
         print(f"Error in google_redirect_handler: {e}")
         raise HTTPException(status_code=400, detail="Authentication failed")
-
 
 @router.get("/logout")
 async def logout(request: Request):
