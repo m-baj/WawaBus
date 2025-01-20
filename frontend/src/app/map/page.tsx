@@ -104,6 +104,7 @@ export default function MapPage() {
                 let selectedTime = e.target.value;
                 if (!selectedTime) {
                   const now = new Date();
+		  now.setHours(now.getHours() + 1);
                   selectedTime = now.toISOString().slice(0, 16);
                 }
                 const formattedIso = `${selectedTime}:00.000Z`;
