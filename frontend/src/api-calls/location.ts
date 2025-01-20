@@ -1,11 +1,14 @@
 import axios from "axios";
 import { LocationRequest, LocationResponse } from "@/types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api/v1";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api/v1";
 
-export const fetchLocations = async (): Promise<LocationResponse> => {
+export const fetchLocations = async (
+  timestamp?: string
+): Promise<LocationResponse> => {
   try {
-    const currentTime = new Date().toISOString();
+    const currentTime = timestamp || new Date().toISOString();
     console.log("Current time:", currentTime);
 
     const payload: LocationRequest = {
@@ -24,7 +27,7 @@ export const fetchLocations = async (): Promise<LocationResponse> => {
 
     console.log("API response:", response.data);
 
-    localStorage.setItem('busMarkers', JSON.stringify(response.data.result));
+    localStorage.setItem("busMarkers", JSON.stringify(response.data.result));
 
     return response.data;
   } catch (error: any) {
