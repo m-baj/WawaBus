@@ -1,5 +1,5 @@
 services:
-  nosql-db:
+  nosql-db-deployment:
     image: mongo:8.0
     restart: "no"
     healthcheck:
@@ -8,16 +8,17 @@ services:
       retries: 5
       start_period: 30s
       timeout: 10s
+
+    env_file:
+      - .env-deployment
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
       - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
     volumes:
-      - app-nosql-db-data:/data/db
-    ports:
-      - "27017:27017"
+      - prod-app-nosql-db-data:/data/db
 
-  sql-db:
+  sql-db-deployment:
     image: postgres:12
     restart: "no"
     healthcheck:
@@ -27,18 +28,16 @@ services:
       start_period: 30s
       timeout: 10s
     volumes:
-      - app-db-data:/var/lib/postgresql/data/pgdata
+      - prod-app-db-data:/var/lib/postgresql/data/pgdata
     env_file:
-      - .env
+      - .env-deployment
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_DB=${POSTGRES_DB?Variable not set}
-    ports:
-      - "5433:5432"
 
-  backend-api:
+  backend-api-deployment:
     image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
     restart: "no"
     networks:
@@ -48,9 +47,9 @@ services:
         condition: service_healthy
 #        restart: true
     env_file:
-      - .env
+      - .env-deployment
     ports:
-      - "8000:8000"
+      - "8001:8000"
 
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/utils/health-check/"]
@@ -61,16 +60,16 @@ services:
     build:
       context: ./api
 
-  frontend:
+  frontend-deployment:
     image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}'
     build:
       context: ./frontend
       args:
-        NEXT_PUBLIC_API_BASE_URL: http://localhost:8000/api/v1
+        NEXT_PUBLIC_API_BASE_URL: http://runner.bearded-tetra.ts.net:8001/api/v1
     ports:
-      - "3000:3000"
+      - "80:3000"
     environment:
-      - NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api/v1
+      - NEXT_PUBLIC_API_BASE_URL=http://runner.bearded-tetra.ts.net:8001/api/v1
       - NODE_ENV=production
     restart: "no"
     networks:
@@ -84,7 +83,7 @@ services:
       timeout: 5s
       retries: 5
 
-  data-retrieval:
+  data-retrieval-deployment:
     image: '${DOCKER_IMAGE_DATA_RETRIEVAL?Variable not set}:${TAG-latest}'
     restart: "no"
     networks:
@@ -94,6 +93,8 @@ services:
     depends_on:
       nosql-db:
         condition: service_healthy
+    env_file:
+      - .env-deployment
     environment:
       - MONGO_HOST=${MONGO_HOST}
       - MONGO_PORT=${MONGO_PORT}
@@ -103,6 +104,9 @@ services:
       - WARSAW_API_URL=${WARSAW_API_URL}
       - WARSAW_API_KEY=${WARSAW_API_KEY}
       - HEARTBEAT=${HEARTBEAT}
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
 
   postgres-exporter:
     profiles:
@@ -114,6 +118,8 @@ services:
           condition: service_healthy
     networks:
         - default
+    env_file:
+      - .env-deployment
     environment:
       - DATA_SOURCE_URI=${POSTGRES_HOST}:${POSTGRES_PORT}/postgres?sslmode=disable
       - DATA_SOURCE_USER=${POSTGRES_USER}
@@ -124,8 +130,10 @@ services:
     networks:
         - default
     image: bitnami/mongodb-exporter:0.11.0-debian-10-r75
+    env_file:
+      - .env-deployment
     environment:
-      - MONGODB_URI=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:27017
+      - MONGODB_URI=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:27018
 
   prometheus:
     profiles:
@@ -136,6 +144,8 @@ services:
         - default
     ports:
       - '9090:9090'
+    env_file:
+      - .env-deployment
     volumes:
       - './grafana/prometheus:/etc/prometheus'
     command: '--config.file=/etc/prometheus/prometheus.yml'
@@ -146,6 +156,10 @@ services:
       image: grafana/grafana-enterprise
       container_name: grafana
       restart: unless-stopped
+      env_file:
+        - .env-deployment
+      env_file:
+        - .env-deployment
       environment:
         - DATABASE_SSL_MODE=disable
         - GF_LOG_LEVEL=debug
@@ -159,14 +173,14 @@ services:
       volumes:
         - './grafana/config/grafana.ini:/etc/grafana/grafana.ini'
         - './grafana/provisioning:/etc/grafana/provisioning'
-        - 'grafana_storage:/var/lib/grafana'
+        - 'prod-grafana_storage:/var/lib/grafana'
       networks:
         - default
 
 volumes:
-  app-db-data:
-  app-nosql-db-data:
-  grafana_storage:
+  prod-app-db-data:
+  prod-app-nosql-db-data:
+  prod-grafana_storage:
 
 networks:
   default:

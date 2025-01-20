@@ -6,10 +6,13 @@ type Response = {
   status: boolean;
 };
 
+const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api/v1";
+
 export const createNotification = async (data: NotificationFormData): Promise<Response> => {
   try {
     const response = await axios.post(
-      `http://localhost:8000/api/v1/notifications/`,
+      `${API_BASE_URL}/notifications/`,
       data,
       {
         headers: {
@@ -43,7 +46,7 @@ type Notification = {
 export const fetchNotifications = async (user_id: number): Promise<Notification[]> => {
   try {
     const response = await axios.get(
-      `http://localhost:8000/api/v1/notifications/user/${user_id}`
+      `${API_BASE_URL}/notifications/user/${user_id}`
     );
     return response.data;
   } catch (error: any) {
@@ -54,7 +57,7 @@ export const fetchNotifications = async (user_id: number): Promise<Notification[
 
 export const deleteNotification = async (id: string): Promise<boolean> => {
   try {
-    await axios.delete(`http://localhost:8000/api/v1/notifications/${id}`);
+    await axios.delete(`${API_BASE_URL}/notifications/${id}`);
     return true;
   } catch (error: any) {
     console.error("API Error:", error.response.data);
