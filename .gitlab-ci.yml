@@ -28,5 +28,7 @@ push-to-prod:
   tags:
     - deploy
   rules:
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "main"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: always
+    - when: never
 
