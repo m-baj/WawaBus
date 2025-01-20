@@ -6,10 +6,13 @@ type Response = {
   status: boolean;
 };
 
+const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api/v1";
+
 export const signup = async (user: RegisterData) => {
   try {
     const response = await axios.post(
-      `http://localhost:8000/api/v1/auth/register`,
+      `${API_BASE_URL}/auth/register`,
       user,
       {
         headers: {
@@ -32,7 +35,7 @@ export const signup = async (user: RegisterData) => {
 export const login = async (data: { email: string; password: string }) => {
   try {
     const response = await axios.post(
-      `http://localhost:8000/api/v1/auth/login`,
+      `${API_BASE_URL}/auth/login`,
       null,
       {
         params: {
