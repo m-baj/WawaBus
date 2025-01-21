@@ -92,7 +92,7 @@ const SearchBar = (props: SearchBarProps) => {
         )}
         <Input
           type="text"
-          placeholder="Filtruj wyświetlane linie"
+          placeholder="Filtruj wyświetlane linie..."
           value={query}
           onChange={handleInputChange}
           border="1px solid #949494"
