@@ -1,4 +1,4 @@
-# PIS 24Z
+# WawaBus - aplikacja wyświetlająca położenie autobusów warszawskich w czasie rzeczywistym
 
 ### Uruchamianie aplikacji
 
